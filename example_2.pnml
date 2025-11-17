@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml xmlns="http://www.pnml.org/version-2010/grammar/pnml">
+
+  <!-- ================== Original Net ================== -->
+  <net id="n2" type="http://www.pnml.org/version-2010/grammar/ptnet">
+    <name><text>Producer-Consumer Cycle (1-Safe)</text></name>
+    <page id="p1">
+      <place id="P1"><name><text>Prod_Ready</text></name><initialMarking><text>1</text></initialMarking></place>
+      <place id="P2"><name><text>Buff_Empty</text></name><initialMarking><text>1</text></initialMarking></place>
+      <place id="P3"><name><text>Buff_Full</text></name><initialMarking><text>0</text></initialMarking></place>
+      <place id="P4"><name><text>Cons_Ready</text></name><initialMarking><text>1</text></initialMarking></place>
+
+      <transition id="T1"><name><text>Produce</text></name></transition>
+      <transition id="T2"><name><text>Consume</text></name></transition>
+
+      <arc id="A1" source="P1" target="T1"/><arc id="A2" source="P2" target="T1"/>
+      <arc id="A3" source="T1" target="P3"/><arc id="A4" source="T1" target="P1"/>
+      <arc id="A5" source="P3" target="T2"/><arc id="A6" source="P4" target="T2"/>
+      <arc id="A7" source="T2" target="P2"/><arc id="A8" source="T2" target="P4"/>
+    </page>
+  </net>
+
+  <!-- ================== Testcase 7: Missing Arc ================== -->
+  <net id="tc7" type="http://www.pnml.org/version-2010/grammar/ptnet">
+    <name><text>Producer-Consumer Missing Arc</text></name>
+    <page id="p1_tc7">
+      <place id="P1_tc7"><name><text>Prod_Ready</text></name><initialMarking><text>1</text></initialMarking></place>
+      <place id="P2_tc7"><name><text>Buff_Empty</text></name><initialMarking><text>1</text></initialMarking></place>
+      <place id="P3_tc7"><name><text>Buff_Full</text></name><initialMarking><text>0</text></initialMarking></place>
+      <place id="P4_tc7"><name><text>Cons_Ready</text></name><initialMarking><text>1</text></initialMarking></place>
+
+      <transition id="T1_tc7"><name><text>Produce</text></name></transition>
+      <transition id="T2_tc7"><name><text>Consume</text></name></transition>
+
+      <arc id="A1_tc7" source="P1_tc7" target="T1_tc7"/><!-- A2 missing -->
+      <arc id="A3_tc7" source="T1_tc7" target="P3_tc7"/>
+      <arc id="A4_tc7" source="T1_tc7" target="P1_tc7"/>
+      <arc id="A5_tc7" source="P3_tc7" target="T2_tc7"/>
+      <arc id="A6_tc7" source="P4_tc7" target="T2_tc7"/>
+      <arc id="A7_tc7" source="T2_tc7" target="P2_tc7"/>
+      <arc id="A8_tc7" source="T2_tc7" target="P4_tc7"/>
+    </page>
+  </net>
+
+  <!-- ================== Testcase 8: Zero Tokens ================== -->
+  <net id="tc8" type="http://www.pnml.org/version-2010/grammar/ptnet">
+    <name><text>Producer-Consumer Zero Tokens</text></name>
+    <page id="p1_tc8">
+      <place id="P1_tc8"><name><text>Prod_Ready</text></name><initialMarking><text>0</text></initialMarking></place>
+      <place id="P2_tc8"><name><text>Buff_Empty</text></name><initialMarking><text>0</text></initialMarking></place>
+      <place id="P3_tc8"><name><text>Buff_Full</text></name><initialMarking><text>0</text></initialMarking></place>
+      <place id="P4_tc8"><name><text>Cons_Ready</text></name><initialMarking><text>0</text></initialMarking></place>
+
+      <transition id="T1_tc8"><name><text>Produce</text></name></transition>
+      <transition id="T2_tc8"><name><text>Consume</text></name></transition>
+
+      <arc id="A1_tc8" source="P1_tc8" target="T1_tc8"/>
+      <arc id="A2_tc8" source="P2_tc8" target="T1_tc8"/>
+      <arc id="A3_tc8" source="T1_tc8" target="P3_tc8"/>
+      <arc id="A4_tc8" source="T1_tc8" target="P1_tc8"/>
+      <arc id="A5_tc8" source="P3_tc8" target="T2_tc8"/>
+      <arc id="A6_tc8" source="P4_tc8" target="T2_tc8"/>
+      <arc id="A7_tc8" source="T2_tc8" target="P2_tc8"/>
+      <arc id="A8_tc8" source="T2_tc8" target="P4_tc8"/>
+    </page>
+  </net>
+
+  <!-- ================== Testcase 9: Deadlock ================== -->
+  <net id="tc9" type="http://www.pnml.org/version-2010/grammar/ptnet">
+    <name><text>Producer-Consumer Deadlock</text></name>
+    <page id="p1_tc9">
+      <place id="P1_tc9"><name><text>Prod_Ready</text></name><initialMarking><text>1</text></initialMarking></place>
+      <place id="P2_tc9"><name><text>Buff_Empty</text></name><initialMarking><text>1</text></initialMarking></place>
+      <place id="P3_tc9"><name><text>Buff_Full</text></name><initialMarking><text>0</text></initialMarking></place>
+      <place id="P4_tc9"><name><text>Cons_Ready</text></name><initialMarking><text>1</text></initialMarking></place>
+      <place id="P5_tc9"><name><text>Dead_Place</text></name><initialMarking><text>0</text></initialMarking></place>
+
+      <transition id="T1_tc9"><name><text>Produce</text></name></transition>
+      <transition id="T2_tc9"><name><text>Consume</text></name></transition>
+      <transition id="T3_tc9"><name><text>Unreachable</text></name></transition>
+
+      <arc id="A1_tc9" source="P1_tc9" target="T1_tc9"/>
+      <arc id="A2_tc9" source="P2_tc9" target="T1_tc9"/>
+      <arc id="A3_tc9" source="T1_tc9" target="P3_tc9"/>
+      <arc id="A4_tc9" source="T1_tc9" target="P1_tc9"/>
+      <arc id="A5_tc9" source="P3_tc9" target="T2_tc9"/>
+      <arc id="A6_tc9" source="P4_tc9" target="T2_tc9"/>
+      <arc id="A7_tc9" source="T2_tc9" target="P2_tc9"/>
+      <arc id="A8_tc9" source="T2_tc9" target="P4_tc9"/>
+    </page>
+  </net>
+
+</pnml>

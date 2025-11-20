@@ -49,10 +49,10 @@ void Graph::buildIOMaps() {
 }
 
 // Kiểm tra missing arc dựa trên số lượng input/output
-bool Graph::checkMissingArc(const std::string& tid) {
+bool Graph::checkMissingArc(const string& tid) {
     // Nếu một transition không có input hoặc output arcs → missing
     if (inputOf[tid].empty() || outputOf[tid].empty()) {
-        std::cout << "[ERROR] Transition " << tid << " has missing arc(s).\n";
+        cout << "[ERROR] Transition " << tid << " has missing arc(s).\n";
         return false;
     }
 
@@ -60,19 +60,15 @@ bool Graph::checkMissingArc(const std::string& tid) {
     vector<int> in = inputOf[tid];
     vector<int> out = outputOf[tid];
 
-    // Loại trùng nhau
-    set<int> inputSet(in.begin(), in.end());
-    set<int> outputSet(out.begin(), out.end());
-
-    if (inputSet.size() != outputSet.size()) {
-        std::cout << "[ERROR] Transition " << tid << " input/output mismatch (possible missing arc).\n";
+    if (in.size() != out.size()) {
+        cout << "[ERROR] Transition " << tid << " input/output mismatch (possible missing arc).\n";
         return false;
     }
 
     return true;
 }
 
-bool Graph::isEnabled(const std::string& tid, const Marking& mk) {
+bool Graph::isEnabled(const string& tid, const Marking& mk) {
     // Kiểm missing arc trước
     if (!checkMissingArc(tid)) return false;
 
@@ -83,7 +79,7 @@ bool Graph::isEnabled(const std::string& tid, const Marking& mk) {
     return true;
 }
 
-Marking Graph::fire(const std::string& tid, const Marking& mk) {
+Marking Graph::fire(const string& tid, const Marking& mk) {
     Marking newM = mk;
 
     for (int p : inputOf[tid]) newM.m[p]--;
@@ -93,7 +89,7 @@ Marking Graph::fire(const std::string& tid, const Marking& mk) {
 }
 
 void Graph::computeBFS() {
-    std::queue<Marking> q;
+    queue<Marking> q;
 
     visited.insert(initial);
     allMarkings.push_back(initial);
@@ -110,6 +106,15 @@ void Graph::computeBFS() {
                 hasEnabled = true;
                 Marking next = fire(t.id, cur);
 
+                // cout << "Firing " << t.id << " from [";
+                // for(int v: cur.m) cout << v << " ";
+                // cout << "] -> [";
+                // for(int v: next.m) cout << v << " ";
+                // cout << "]\n";
+                // cái này là cái reachable markings sẽ thấy nó bị ngược
+                // nhưng mà không phải đâu tại reachable markings của T2 nó trùng initial markings
+                //nên không có in lại, có thể bỏ comment để check :))))
+
                 if (!visited.count(next)) {
                     visited.insert(next);
                     allMarkings.push_back(next);
@@ -119,19 +124,19 @@ void Graph::computeBFS() {
         }
 
         if (!hasEnabled) {
-            std::cout << "[DEADLOCK] Marking [ ";
-            for (int x : cur.m) std::cout << x << " ";
-            std::cout << "] has no transition enabled.\n";
+            cout << "Marking [ ";
+            for (int x : cur.m) cout << x << " ";
+            cout << "] has no transition enabled.\n";
         }
     }
 }
 
 void Graph::printMarkings() {
-    std::cout << "Reachable markings: " << allMarkings.size() << "\n";
+    cout << "Reachable markings: " << allMarkings.size() << "\n";
     for (int i = 0; i < (int)allMarkings.size(); i++) {
-        std::cout << "M" << i << ": [ ";
+        cout << "M" << i << ": [ ";
         for (int x : allMarkings[i].m)
-            std::cout << x << " ";
-        std::cout << "]\n";
+            cout << x << " ";
+        cout << "]\n";
     }
 }

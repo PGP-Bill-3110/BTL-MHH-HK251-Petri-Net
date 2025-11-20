@@ -9,7 +9,7 @@
     <page id="p1">
       <place id="P1">
         <name><text>Prod_Ready</text></name>
-        <initialMarking><text>2</text></initialMarking>
+        <initialMarking><text>1</text></initialMarking>
         <graphics><position x="123" y="87"/></graphics>
       </place>
       <place id="P2">
@@ -24,7 +24,7 @@
       </place>
       <place id="P4">
         <name><text>Cons_Ready</text></name>
-        <initialMarking><text>3</text></initialMarking>
+        <initialMarking><text>1</text></initialMarking>
         <graphics><position x="160" y="142"/></graphics>
       </place>
 
@@ -61,7 +61,7 @@
       </place>
       <place id="P2">
         <name><text>Buff_Empty</text></name>
-        <initialMarking><text>2</text></initialMarking>
+        <initialMarking><text>1</text></initialMarking>
         <graphics><position x="180" y="60"/></graphics>
       </place>
       <place id="P3">
@@ -71,7 +71,7 @@
       </place>
       <place id="P4">
         <name><text>Cons_Ready</text></name>
-        <initialMarking><text>3</text></initialMarking>
+        <initialMarking><text>1</text></initialMarking>
         <graphics><position x="170" y="150"/></graphics>
       </place>
 
@@ -106,7 +106,7 @@
       </place>
       <place id="P2_tc8">
         <name><text>Buff_Empty</text></name>
-        <initialMarking><text>1</text></initialMarking>
+        <initialMarking><text>0</text></initialMarking>
         <graphics><position x="175" y="70"/></graphics>
       </place>
       <place id="P3_tc8">

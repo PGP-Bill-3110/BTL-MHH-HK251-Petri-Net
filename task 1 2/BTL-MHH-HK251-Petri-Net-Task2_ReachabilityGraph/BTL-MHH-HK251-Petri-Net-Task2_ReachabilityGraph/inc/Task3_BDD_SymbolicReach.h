@@ -1,22 +1,43 @@
 #ifndef TASK3_BDD_SYMBOLICREACH_H
 #define TASK3_BDD_SYMBOLICREACH_H
 
+#include "Task1_PNMLParser.h"
+
+#include <cudd/cuddObj.hh> // CUDD C++ Wrapper library
+#include <map>
 #include <vector>
-#include "cudd/cuddObj.hh"
+#include <string>
 
-class BDD_SymbolicReach {
+class BDDReacher{
 public:
-    BDD_SymbolicReach(Cudd& mgr, int numPlaces);
-    void encodeMarking(const std::vector<int>& marking);
-    void computeReachableSet();
-    void printReachableMarkings() const;
-    unsigned getNumReachable() const;
+    BDDReacher(const Net& net); //Net[id, source, targer, weight]
+    ~BDDReacher();
 
+    void computeBDD();
 private:
-    Cudd& mgr;
-    int numPlaces;
-    std::vector<BDD> placeVars;  // BDD variable for each place
-    BDD reachable;               // BDD representing reachable markings
+    const Net& net;
+    Cudd mgr; //cudd manager
+
+    std::vector<    BDD> current_vars;  //current state of x_i
+    std::vector<BDD> next_vars;     //next state of x_i
+
+    //Mapping string place.id to index
+    std::map<std::string, int> placeIdToIndex;
+
+    
+    //init BDD variables
+    void initVariables();
+
+    //build BDD for init state - M_0
+    BDD buildInitialMarking();
+
+    //build BDD for ONE transition relate 
+    BDD buildSingleTransition(const Transition& t);
+
+
+    //build BDD for all transition ralate
+    BDD buildTransitionRelation();
 };
+
 
 #endif

@@ -1,7 +1,11 @@
+#ifndef TASK2_REACHABILITYGRAPH_H
+#define TASK2_REACHABILITYGRAPH_H
+
 #include "Task1_PNMLParser.h"
 #include <unordered_set>
 #include <queue>
 #include <set>
+#include <unordered_map>
 
 struct Marking {
     vector<int> m;
@@ -15,7 +19,7 @@ struct MarkingHash {
     size_t operator()(const Marking& mk) const {
         size_t h = 0;
         for (int x : mk.m)
-            h = h * 1315423911u + x; //Jenkens hash
+            h = h * 1315423911u + x;
         return h;
     }
 };
@@ -26,17 +30,17 @@ public:
 
     void computeBFS();
     void printMarkings();
+
     const vector<Marking>& getMarkings() const {
         return allMarkings;
     }
+
 private:
     vector<Place> places;
     vector<Transition> transitions;
     vector<Arc> arcs;
 
-    // mapping transition → input places
     unordered_map<string, vector<int>> inputOf;
-    // mapping transition → output places
     unordered_map<string, vector<int>> outputOf;
 
     Marking initial;
@@ -48,3 +52,5 @@ private:
     bool isEnabled(const string& tid, const Marking& mk);
     Marking fire(const string& tid, const Marking& mk);
 };
+
+#endif

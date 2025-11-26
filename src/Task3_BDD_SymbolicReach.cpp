@@ -51,9 +51,15 @@ BDD BDDReacher::buildSingleTransition(const Transition& t){
             }
         }
     }
-        if (inputs.empty() || outputs.empty() || inputs.size() != outputs.size()) {
-        // Có thể in warning nếu muốn debug:
-        // cout << "[BDD Warning] Ignoring invalid transition " << t.id << endl;
+    //check missing arc
+    if(inputs.empty() || outputs.empty()){
+        cout << "[BDD ERROR] Transition " << t.id << " has missing arc(s) (no input or output)." << endl;
+        return mgr.bddZero();
+    }
+    
+    //check input != output
+    if(inputs.size() != outputs.size()){
+        cout << "[BDD ERROR] Transition " << t.id << " input/output mismatch (possible missing arc)." << endl;
         return mgr.bddZero();
     }
 

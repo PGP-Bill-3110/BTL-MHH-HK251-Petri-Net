@@ -1,3 +1,6 @@
+#ifndef TASK2_REACHABILITYGRAPH_H
+#define TASK2_REACHABILITYGRAPH_H
+
 #include "Task1_PNMLParser.h"
 #include <unordered_set>
 #include <queue>
@@ -46,3 +49,6 @@ private:
     bool isEnabled(const string& tid, const Marking& mk);
     Marking fire(const string& tid, const Marking& mk);
 };
+
+
+#endif

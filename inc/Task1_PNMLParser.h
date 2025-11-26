@@ -1,3 +1,6 @@
+#ifndef TASK1_PNMLPARSER_H
+#define TASK1_PNMLPARSER_H
+
 #include "main.h"
 
 struct Position {
@@ -47,3 +50,6 @@ private:
     void parseTransition(XMLElement* transElem, Net& net);
     void parseArc(XMLElement* arcElem, Net& net);
 };
+
+
+#endif

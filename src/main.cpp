@@ -33,20 +33,20 @@ int main() {
              << ", Arcs: " << nets[i].arcs.size() << "\n";
         cout << "======================================\n";
 
-        // chay luon task 2 de so sanh thoi gian
-        cout<<"\n--- [Task 2] Explicit computation (BFS) ---\n";
+        // // chay luon task 2 de so sanh thoi gian
+        // cout<<"\n--- [Task 2] Explicit computation (BFS) ---\n";
 
-        //bat dau tinh thoi gian
-        auto startBFS = high_resolution_clock::now();
-        // Tạo graph và chạy BFS reachability
-        Graph g(nets[i]);
-        cout << "Computing reachable markings...\n";
-        g.computeBFS();
-        //ket thuc tinh thoi gian
-        auto endBFS = high_resolution_clock::now();
-        duration<double> timeBFS = endBFS - startBFS;
-        g.printMarkings();
-        cout << ">> BFS Execution Time: " << timeBFS.count() << " seconds.\n";
+        // //bat dau tinh thoi gian
+        // auto startBFS = high_resolution_clock::now();
+        // // Tạo graph và chạy BFS reachability
+        // Graph g(nets[i]);
+        // cout << "Computing reachable markings...\n";
+        // g.computeBFS();
+        // //ket thuc tinh thoi gian
+        // auto endBFS = high_resolution_clock::now();
+        // duration<double> timeBFS = endBFS - startBFS;
+        // g.printMarkings();
+        // cout << ">> BFS Execution Time: " << timeBFS.count() << " seconds.\n";
 
 
 

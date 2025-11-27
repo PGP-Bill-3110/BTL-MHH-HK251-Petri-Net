@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+  <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
+    <place id="p1">
+      <name><text>p1</text></name>
+      <initialMarking><value>1</value></initialMarking>
+    </place>
+    <place id="p2">
+      <name><text>p2</text></name>
+      <initialMarking><value>0</value></initialMarking>
+    </place>
+
+    <transition id="t12">
+      <name><text>move_p1_to_p2</text></name>
+    </transition>
+    <transition id="t21">
+      <name><text>move_p2_to_p1</text></name>
+    </transition>
+
+    <arc id="a1" source="p1" target="t12"/>
+    <arc id="a2" source="t12" target="p2"/>
+    <arc id="a3" source="p2" target="t21"/>
+    <arc id="a4" source="t21" target="p1"/>
+  </net>
+</pnml>

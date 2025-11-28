@@ -1,7 +1,7 @@
 #include "../inc/Task2_ReachabilityGraph.h"
 
 int main() {
-    string filename = "test/example_2.pnml";
+    string filename = "test/phylosopher.pnml";
 
     PNMLParser parser;
     if (!parser.loadFile(filename)) {
@@ -43,4 +43,4 @@ int main() {
 }
 
 //g++ -std=c++17 -Iinc src/*.cpp -o pnml_test
-//pnml_test
+//./pnml_test

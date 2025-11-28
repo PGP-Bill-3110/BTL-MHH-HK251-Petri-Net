@@ -91,8 +91,9 @@ Marking Graph::fire(const string& tid, const Marking& mk) {
 void Graph::computeBFS() {
     queue<Marking> q;
 
-    visited.insert(initial);
-    allMarkings.push_back(initial);
+    // visited.insert(initial);
+    // allMarkings.push_back(initial);
+    // cái này sửa lại để có allMarkings theo đúng thứ tự khi trong kết quả có bao gồm initial marking
     q.push(initial);
 
     while (!q.empty()) {

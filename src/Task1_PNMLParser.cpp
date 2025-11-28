@@ -57,6 +57,7 @@ bool PNMLParser::loadFile(const string& filename) {
 void PNMLParser::parsePlace(XMLElement* placeElem, Net& net) {
     Place p;
     p.id = placeElem->Attribute("id") ? placeElem->Attribute("id") : "";
+    p.tokens = 0;
 
     for (XMLElement* c = placeElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
         if (string(c->Name()).find("name") != string::npos) {

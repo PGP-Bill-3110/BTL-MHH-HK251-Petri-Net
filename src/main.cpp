@@ -6,7 +6,7 @@ using namespace std;
 int main() {
     PNMLParser parser;
 
-    string filename = "test/example.pnml";
+    string filename = "test/phylosopher.pnml";
     if (!parser.loadFile(filename)) {
         cerr << "Failed to load file: " << filename << endl;
         return 1;

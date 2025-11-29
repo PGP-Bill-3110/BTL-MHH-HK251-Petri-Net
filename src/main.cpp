@@ -1,4 +1,10 @@
 #include "../inc/Task2_ReachabilityGraph.h"
+#include "../inc/Task3_BDD_SymbolicReach.h"
+#include <chrono>
+#include <cmath>
+
+using namespace std;
+using namespace std::chrono;
 
 int main() {
     string filename = "test/phylosopher.pnml";
@@ -29,18 +35,54 @@ int main() {
              << ", Arcs: " << nets[i].arcs.size() << "\n";
         cout << "======================================\n";
 
-        // Tạo graph và chạy BFS reachability
-        Graph g(nets[i]);
+        // -----------------------------
+        // Task 2: BFS Explicit Reachability
+        // -----------------------------
+        cout << "\n--- [Task 2] Explicit computation (BFS) ---\n";
+        auto startBFS = high_resolution_clock::now();
 
-        cout << "\nComputing reachable markings...\n";
+        Graph g(nets[i]);
+        cout << "Computing reachable markings...\n";
         g.computeBFS();
 
+        auto endBFS = high_resolution_clock::now();
+        duration<double> timeBFS = endBFS - startBFS;
+
         g.printMarkings();
+        cout << ">> BFS Execution Time: " << timeBFS.count() << " seconds.\n";
+
+        // -----------------------------
+        // Task 3: BDD Symbolic Reachability
+        // -----------------------------
+        cout << "\n--- [Task 3] Symbolic computation (BDD) ---\n";
+        auto startBDD = high_resolution_clock::now();
+
+        BDDReacher bddReacher(nets[i]);
+        cout << "Computing reachable markings...\n";
+        bddReacher.computeBDD();
+
+        auto endBDD = high_resolution_clock::now();
+        duration<double> timeBDD = endBDD - startBDD;
+
+        bddReacher.printBDDMarkings();
+        cout << ">> BDD Execution Time: " << timeBDD.count() << " seconds.\n";
+
         cout << endl;
     }
 
     return 0;
 }
 
-//g++ -std=c++17 -Iinc src/*.cpp -o pnml_test
-//./pnml_test
+// compile:  
+
+// g++ -std=c++17 \
+-Iinc \
+-Icudd/include \
+src/*.cpp \
+cudd/build/libcudd.a \
+-lm -ldl \
+-o pnml_test
+
+// run: ./pnml_test
+
+    

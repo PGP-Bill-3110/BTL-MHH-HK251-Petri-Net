@@ -1,3 +1,6 @@
+#ifndef TASK2_REACHABILITYGRAPH_H
+#define TASK2_REACHABILITYGRAPH_H
+
 #include "Task1_PNMLParser.h"
 #include <unordered_set>
 #include <queue>
@@ -15,7 +18,7 @@ struct MarkingHash {
     size_t operator()(const Marking& mk) const {
         size_t h = 0;
         for (int x : mk.m)
-            h = h * 1315423911u + x; //Jenkens hash
+            h = h * 1315423911u + x; // Jenkins hash
         return h;
     }
 };
@@ -46,3 +49,5 @@ private:
     bool isEnabled(const string& tid, const Marking& mk);
     Marking fire(const string& tid, const Marking& mk);
 };
+
+#endif // TASK2_REACHABILITYGRAPH_H

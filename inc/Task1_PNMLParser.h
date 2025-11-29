@@ -1,4 +1,10 @@
+#ifndef TASK1_PNMLPARSER_H
+#define TASK1_PNMLPARSER_H
+
 #include "main.h"
+#include "tinyxml2.h"
+using namespace tinyxml2;
+using namespace std;
 
 struct Position {
     float x, y;
@@ -47,3 +53,5 @@ private:
     void parseTransition(XMLElement* transElem, Net& net);
     void parseArc(XMLElement* arcElem, Net& net);
 };
+
+#endif // TASK1_PNMLPARSER_H

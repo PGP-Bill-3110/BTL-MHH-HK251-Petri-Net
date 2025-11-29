@@ -21,29 +21,30 @@ void Graph::buildIOMaps() {
         outputOf[t.id] = {};
     }
 
+    unordered_map<string,int> placeIndex;
+    unordered_map<string,int> transIndex;
+
+    for(int i=0; i<places.size(); ++i) placeIndex[places[i].id] = i;
+    for(int i=0; i<transitions.size(); ++i) transIndex[transitions[i].id] = i;
+
     for (const auto& arc : arcs) {
-        bool srcIsPlace = false;
-        int placeIndex = -1;
+        bool srcIsPlace = placeIndex.count(arc.source);
+        bool trgIsPlace = placeIndex.count(arc.target);
 
-        for (int i = 0; i < places.size(); i++) {
-            if (places[i].id == arc.source) {
-                srcIsPlace = true;
-                placeIndex = i;
-                break;
-            }
+        bool srcIsTrans = transIndex.count(arc.source);
+        bool trgIsTrans = transIndex.count(arc.target);
+
+        if (srcIsPlace && trgIsTrans) {
+            // place → transition  (input arc)
+            inputOf[arc.target].push_back(placeIndex[arc.source]);
         }
-
-        if (srcIsPlace) {
-            // source = place, target = transition
-            inputOf[arc.target].push_back(placeIndex);
-        } else {
-            // source = transition, target = place
-            for (int i = 0; i < places.size(); i++) {
-                if (places[i].id == arc.target) {
-                    outputOf[arc.source].push_back(i);
-                    break;
-                }
-            }
+        else if (srcIsTrans && trgIsPlace) {
+            // transition → place (output arc)
+            outputOf[arc.source].push_back(placeIndex[arc.target]);
+        }
+        else {
+            cout << "[ERROR] Invalid arc relation: "
+                 << arc.source << " → " << arc.target << "\n";
         }
     }
 }
@@ -70,10 +71,12 @@ bool Graph::checkMissingArc(const string& tid) {
 
 bool Graph::isEnabled(const string& tid, const Marking& mk) {
     // Kiểm missing arc trước
-    if (!checkMissingArc(tid)) return false;
+    // if (!checkMissingArc(tid)) return false;
+    // chỉ dùng checkMissingArc trong trường hợp hoàn toàn bắt buộc 2 đầu của transitions có số lượng bằng nhau
+    // loại bỏ vì phylosopher.pnml không tương thích
 
     for (int p : inputOf[tid]) {
-        if (mk.m[p] != 1) return false;
+        if (mk.m[p] < 1) return false;
     }
 
     return true;

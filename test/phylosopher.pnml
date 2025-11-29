@@ -75,7 +75,7 @@
       <arc id="p1_release_fork1" source="RELEASE_1" target="FORK_1"/>
       <arc id="p1_release_fork5" source="RELEASE_1" target="FORK_5"/>
 
-      ==================== ARCS - PHILOSOPHER 2 ====================
+      <!-- ==================== ARCS - PHILOSOPHER 2 ==================== -->
       <arc id="p2_think_to_left" source="THINK_2" target="TAKE_LEFT_2"/>
       <arc id="p2_fork2_to_left" source="FORK_2" target="TAKE_LEFT_2"/>
       <arc id="p2_left_to_wait" source="TAKE_LEFT_2" target="WAIT_RIGHT_2"/>
@@ -87,7 +87,7 @@
       <arc id="p2_release_fork2" source="RELEASE_2" target="FORK_2"/>
       <arc id="p2_release_fork1" source="RELEASE_2" target="FORK_1"/>
 
-      ==================== ARCS - PHILOSOPHER 3 ====================
+      <!-- ==================== ARCS - PHILOSOPHER 3 ==================== -->
       <arc id="p3_think_to_left" source="THINK_3" target="TAKE_LEFT_3"/>
       <arc id="p3_fork3_to_left" source="FORK_3" target="TAKE_LEFT_3"/>
       <arc id="p3_left_to_wait" source="TAKE_LEFT_3" target="WAIT_RIGHT_3"/>

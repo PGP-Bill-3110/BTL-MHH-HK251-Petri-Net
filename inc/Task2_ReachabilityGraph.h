@@ -26,6 +26,7 @@ public:
 
     void computeBFS();
     void printMarkings();
+    const vector<Marking>& getAllMarkings() const;
 
 private:
     vector<Place> places;

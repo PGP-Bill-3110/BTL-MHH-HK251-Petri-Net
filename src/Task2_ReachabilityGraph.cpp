@@ -144,3 +144,7 @@ void Graph::printMarkings() {
         cout << "]\n";
     }
 }
+
+const vector<Marking>& Graph::getAllMarkings() const {
+    return allMarkings;
+}

@@ -58,6 +58,8 @@ void PNMLParser::parsePlace(XMLElement* placeElem, Net& net) {
     Place p;
     p.id = placeElem->Attribute("id") ? placeElem->Attribute("id") : "";
     p.tokens = 0;
+    p.name = "";
+    p.pos = {0, 0};
 
     for (XMLElement* c = placeElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
         if (string(c->Name()).find("name") != string::npos) {
@@ -89,6 +91,8 @@ void PNMLParser::parsePlace(XMLElement* placeElem, Net& net) {
 void PNMLParser::parseTransition(XMLElement* transElem, Net& net) {
     Transition t;
     t.id = transElem->Attribute("id") ? transElem->Attribute("id") : "";
+    t.name = "";
+    t.pos = {0, 0};
 
     for (XMLElement* c = transElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
         if (string(c->Name()).find("name") != string::npos) {

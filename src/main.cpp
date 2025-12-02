@@ -1,7 +1,7 @@
 #include "../inc/Task2_ReachabilityGraph.h"
 
 int main() {
-    string filename = "test/phylosopher.pnml";
+    string filename = "test/example_2.pnml";
 
     PNMLParser parser;
     if (!parser.loadFile(filename)) {

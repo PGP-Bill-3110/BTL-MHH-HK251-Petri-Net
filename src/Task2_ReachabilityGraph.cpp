@@ -50,19 +50,16 @@ void Graph::buildIOMaps() {
 }
 
 // Kiểm tra missing arc dựa trên số lượng input/output
-bool Graph::checkMissingArc(const string& tid) {
-    // Nếu một transition không có input hoặc output arcs → missing
-    if (inputOf[tid].empty() || outputOf[tid].empty()) {
-        cout << "[ERROR] Transition " << tid << " has missing arc(s).\n";
-        return false;
+bool Graph::checkMissingArc() {
+    int totalInput = 0, totalOutput = 0;
+
+    for(const auto& t : transitions) {
+        totalInput += inputOf[t.id].size();
+        totalOutput += outputOf[t.id].size();
     }
 
-    // Nếu số lượng input arcs != số lượng output arcs sau loại trùng lặp → missing
-    vector<int> in = inputOf[tid];
-    vector<int> out = outputOf[tid];
-
-    if (in.size() != out.size()) {
-        cout << "[ERROR] Transition " << tid << " input/output mismatch (possible missing arc).\n";
+    if(totalInput != totalOutput) {
+        cout << "[ERROR] Total input arcs != total output arcs\n";
         return false;
     }
 
@@ -70,11 +67,6 @@ bool Graph::checkMissingArc(const string& tid) {
 }
 
 bool Graph::isEnabled(const string& tid, const Marking& mk) {
-    // Kiểm missing arc trước
-    // if (!checkMissingArc(tid)) return false;
-    // chỉ dùng checkMissingArc trong trường hợp hoàn toàn bắt buộc 2 đầu của transitions có số lượng bằng nhau
-    // loại bỏ vì phylosopher.pnml không tương thích
-
     for (int p : inputOf[tid]) {
         if (mk.m[p] < 1) return false;
     }
@@ -92,11 +84,16 @@ Marking Graph::fire(const string& tid, const Marking& mk) {
 }
 
 void Graph::computeBFS() {
+    if(!checkMissingArc()) {
+        cout << "[FATAL] Total input/output mismatch. BFS aborted.\n";
+        return;
+    }
+
     queue<Marking> q;
 
     // visited.insert(initial);
     // allMarkings.push_back(initial);
-    // cái này sửa lại để có allMarkings theo đúng thứ tự khi trong kết quả có bao gồm initial marking
+    // comment phần trên để initial không trờ thành reachable marking ngay từ đầu
     q.push(initial);
 
     while (!q.empty()) {
@@ -115,9 +112,7 @@ void Graph::computeBFS() {
                 // cout << "] -> [";
                 // for(int v: next.m) cout << v << " ";
                 // cout << "]\n";
-                // cái này là cái reachable markings sẽ thấy nó bị ngược
-                // nhưng mà không phải đâu tại reachable markings của T2 nó trùng initial markings
-                //nên không có in lại, có thể bỏ comment để check :))))
+                // cái này để in ra những transition được fire tất cả kết quả
 
                 if (!visited.count(next)) {
                     visited.insert(next);

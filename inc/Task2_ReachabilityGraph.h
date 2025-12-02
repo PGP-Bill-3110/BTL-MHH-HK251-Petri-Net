@@ -43,7 +43,7 @@ private:
     unordered_set<Marking, MarkingHash> visited;
 
     void buildIOMaps();
-    bool checkMissingArc(const std::string& tid);
+    bool checkMissingArc();
     bool isEnabled(const string& tid, const Marking& mk);
     Marking fire(const string& tid, const Marking& mk);
 };

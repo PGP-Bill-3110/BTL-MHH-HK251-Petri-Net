@@ -51,17 +51,17 @@ BDD BDDReacher::buildSingleTransition(const Transition& t){
             }
         }
     }
-    //check missing arc
-    if(inputs.empty() || outputs.empty()){
-        cout << "[BDD ERROR] Transition " << t.id << " has missing arc(s) (no input or output)." << endl;
-        return mgr.bddZero();
-    }
+    // // check missing arc
+    // if(inputs.empty() || outputs.empty()){
+    //     cout << "[BDD ERROR] Transition " << t.id << " has missing arc(s) (no input or output)." << endl;
+    //     return mgr.bddZero();
+    // }
     
-    //check input != output
-    if(inputs.size() != outputs.size()){
-        cout << "[BDD ERROR] Transition " << t.id << " input/output mismatch (possible missing arc)." << endl;
-        return mgr.bddZero();
-    }
+    // // check input != output
+    // if(inputs.size() != outputs.size()){
+    //     cout << "[BDD ERROR] Transition " << t.id << " input/output mismatch (possible missing arc)." << endl;
+    //     return mgr.bddZero();
+    // }
 
     //pre condition
     BDD pre = mgr.bddOne();
@@ -175,3 +175,20 @@ void BDDReacher::printBDDMarkings(){
     }
 }
 
+// void BDDReacher::dumpDot(std::string filename) {
+//     FILE* fp = fopen(filename.c_str(), "w");
+//     if (!fp) return;
+//     DdNode* nodes[1];
+//     nodes[0] = reachableSet.getNode();
+//     int numVars = net.places.size() * 2;
+//     const char** inames = new const char*[numVars];
+//     vector<string> tempNames;
+//     for (const auto& p : net.places) {
+//         tempNames.push_back(p.id);       
+//         tempNames.push_back(p.id + "'"); 
+//     }
+//     for(int i = 0; i < numVars; i++) inames[i] = tempNames[i].c_str();
+//     Cudd_DumpDot(mgr.getManager(), 1, nodes, (char**)inames, NULL, fp);
+//     fclose(fp);
+//     delete[] inames;
+// }

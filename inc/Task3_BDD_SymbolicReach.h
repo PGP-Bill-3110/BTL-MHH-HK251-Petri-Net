@@ -16,6 +16,8 @@ public:
     void computeBDD();
     BDD getReachableSet();
     void printBDDMarkings();
+
+    // void dumpDot(std::string filename);
 private:
     const Net& net;
     Cudd mgr; //cudd manager

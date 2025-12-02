@@ -9,3 +9,10 @@
 # Others
 *.log
 *.tmp
+
+# test
+test/
+
+*.dot
+
+tests/

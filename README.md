@@ -5,7 +5,7 @@ Thêm script Python để sinh ra 2 file test lớn
       * Thử thách BFS (về thời gian/bộ nhớ) và kiểm chứng khả năng nén của BDD.
 2.  **`complex_deadlock.pnml`**: Bài toán "Triết gia ăn tối" (Dining Philosophers) với 5 triết gia.
       * Có deadlock tiềm ẩn (khi tất cả cùng cầm nĩa bên trái).
-      * Kiểm tra Task 4 cực tốt.
+      * Kiểm tra Task 4.
 
 
 ### Chạy thử nghiệm và Đánh giá
@@ -33,7 +33,7 @@ Thêm script Python để sinh ra 2 file test lớn
     **Kỳ vọng:**
 
       * **Reachable markings:** `4096`. (Nếu BFS in ra hết màn hình thì hơi dài, nhưng số lượng phải đúng).
-      * **BDD Time:** Rất nhanh (có thể \< 0.01s) vì BDD nén các trạng thái song song cực tốt.
+      * **BDD Time:** Rất nhanh (có thể \< 0.01s) vì BDD nén các trạng thái song song.
       * **BFS Time:** Sẽ chậm hơn đáng kể so với BDD.
       * **Task 5:** Max Value sẽ rất lớn 
       * **Deadlock:** NO DEADLOCK FOUND.

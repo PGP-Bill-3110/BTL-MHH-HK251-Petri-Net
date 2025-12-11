@@ -21,47 +21,45 @@ void Graph::buildIOMaps() {
         outputOf[t.id] = {};
     }
 
+    unordered_map<string,int> placeIndex;
+    unordered_map<string,int> transIndex;
+
+    for(int i=0; i<places.size(); ++i) placeIndex[places[i].id] = i;
+    for(int i=0; i<transitions.size(); ++i) transIndex[transitions[i].id] = i;
+
     for (const auto& arc : arcs) {
-        bool srcIsPlace = false;
-        int placeIndex = -1;
+        bool srcIsPlace = placeIndex.count(arc.source);
+        bool trgIsPlace = placeIndex.count(arc.target);
 
-        for (int i = 0; i < places.size(); i++) {
-            if (places[i].id == arc.source) {
-                srcIsPlace = true;
-                placeIndex = i;
-                break;
-            }
+        bool srcIsTrans = transIndex.count(arc.source);
+        bool trgIsTrans = transIndex.count(arc.target);
+
+        if (srcIsPlace && trgIsTrans) {
+            // place → transition  (input arc)
+            inputOf[arc.target].push_back(placeIndex[arc.source]);
         }
-
-        if (srcIsPlace) {
-            // source = place, target = transition
-            inputOf[arc.target].push_back(placeIndex);
-        } else {
-            // source = transition, target = place
-            for (int i = 0; i < places.size(); i++) {
-                if (places[i].id == arc.target) {
-                    outputOf[arc.source].push_back(i);
-                    break;
-                }
-            }
+        else if (srcIsTrans && trgIsPlace) {
+            // transition → place (output arc)
+            outputOf[arc.source].push_back(placeIndex[arc.target]);
+        }
+        else {
+            cout << "[ERROR] Invalid arc relation: "
+                 << arc.source << " → " << arc.target << "\n";
         }
     }
 }
 
 // Kiểm tra missing arc dựa trên số lượng input/output
-bool Graph::checkMissingArc(const string& tid) {
-    // Nếu một transition không có input hoặc output arcs → missing
-    if (inputOf[tid].empty() || outputOf[tid].empty()) {
-        cout << "[ERROR] Transition " << tid << " has missing arc(s).\n";
-        return false;
+bool Graph::checkMissingArc() {
+    int totalInput = 0, totalOutput = 0;
+
+    for(const auto& t : transitions) {
+        totalInput += inputOf[t.id].size();
+        totalOutput += outputOf[t.id].size();
     }
 
-    // Nếu số lượng input arcs != số lượng output arcs sau loại trùng lặp → missing
-    vector<int> in = inputOf[tid];
-    vector<int> out = outputOf[tid];
-
-    if (in.size() != out.size()) {
-        cout << "[ERROR] Transition " << tid << " input/output mismatch (possible missing arc).\n";
+    if(totalInput != totalOutput) {
+        cout << "[ERROR] Total input arcs != total output arcs\n";
         return false;
     }
 
@@ -69,11 +67,8 @@ bool Graph::checkMissingArc(const string& tid) {
 }
 
 bool Graph::isEnabled(const string& tid, const Marking& mk) {
-    // Kiểm missing arc trước
-    if (!checkMissingArc(tid)) return false;
-
     for (int p : inputOf[tid]) {
-        if (mk.m[p] != 1) return false;
+        if (mk.m[p] < 1) return false;
     }
 
     return true;
@@ -89,10 +84,16 @@ Marking Graph::fire(const string& tid, const Marking& mk) {
 }
 
 void Graph::computeBFS() {
+    if(!checkMissingArc()) {
+        cout << "[FATAL] Total input/output mismatch. BFS aborted.\n";
+        return;
+    }
+
     queue<Marking> q;
 
-    visited.insert(initial);
-    allMarkings.push_back(initial);
+    // visited.insert(initial);
+    // allMarkings.push_back(initial);
+    // comment phần trên để initial không trờ thành reachable marking ngay từ đầu
     q.push(initial);
 
     while (!q.empty()) {
@@ -111,9 +112,7 @@ void Graph::computeBFS() {
                 // cout << "] -> [";
                 // for(int v: next.m) cout << v << " ";
                 // cout << "]\n";
-                // cái này là cái reachable markings sẽ thấy nó bị ngược
-                // nhưng mà không phải đâu tại reachable markings của T2 nó trùng initial markings
-                //nên không có in lại, có thể bỏ comment để check :))))
+                // cái này để in ra những transition được fire tất cả kết quả
 
                 if (!visited.count(next)) {
                     visited.insert(next);
@@ -139,4 +138,8 @@ void Graph::printMarkings() {
             cout << x << " ";
         cout << "]\n";
     }
+}
+
+const vector<Marking>& Graph::getAllMarkings() const {
+    return allMarkings;
 }

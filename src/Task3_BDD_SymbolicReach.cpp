@@ -1,6 +1,6 @@
 #include "../inc/Task3_BDD_SymbolicReach.h"
 #include  <cmath>
-
+#include <unordered_set> 
 
 BDDReacher::BDDReacher(const Net& inputNet) : net(inputNet), mgr(0, 0), reachableSet(mgr.bddZero()){
     for(int i = 0; i < net.places.size(); i++){
@@ -57,11 +57,6 @@ BDD BDDReacher::buildSingleTransition(const Transition& t){
         return mgr.bddZero();
     }
     
-    //check input != output
-    if(inputs.size() != outputs.size()){
-        cout << "[BDD ERROR] Transition " << t.id << " input/output mismatch (possible missing arc)." << endl;
-        return mgr.bddZero();
-    }
 
     //pre condition
     BDD pre = mgr.bddOne();

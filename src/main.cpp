@@ -5,7 +5,7 @@
 
 using namespace std::chrono;
 int main() {
-    string filename = "test/example_2.pnml";
+    string filename = "test/phylosopher.pnml";
 
     PNMLParser parser;
     if (!parser.loadFile(filename)) {

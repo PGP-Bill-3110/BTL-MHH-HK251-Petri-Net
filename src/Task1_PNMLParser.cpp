@@ -12,32 +12,40 @@ bool PNMLParser::loadFile(const string& filename) {
         return false;
     }
 
-    XMLElement* pnmlElem = doc.FirstChildElement("pnml");
+    XMLElement* pnmlElem = doc.RootElement();
     if (!pnmlElem) {
-        cerr << "Error: No <pnml> element found." << endl;
+        cerr << "Error: No root element <pnml> found." << endl;
         return false;
     }
 
-    for(XMLElement* netElem = pnmlElem->FirstChildElement("net"); netElem; netElem = netElem->NextSiblingElement("net")) {
+    for (XMLElement* netElem = pnmlElem->FirstChildElement(); netElem; netElem = netElem->NextSiblingElement()) {
+        if (string(netElem->Name()).find("net") == string::npos) continue;
+
         Net net;
         net.id = netElem->Attribute("id") ? netElem->Attribute("id") : "";
 
-        XMLElement* pageElem = netElem->FirstChildElement("page");
-        if(!pageElem){
-            cerr << "Warning: net " << net.id << " has no <page>." << endl;
+        XMLElement* pageElem = nullptr;
+        for (XMLElement* p = netElem->FirstChildElement(); p; p = p->NextSiblingElement()) {
+            if (string(p->Name()).find("page") != string::npos) {
+                pageElem = p;
+                break;
+            }
+        }
+        if (!pageElem) {
+            cerr << "Warning: net " << net.id << " has no <page> element." << endl;
             continue;
         }
 
-        for(XMLElement* placeElem = pageElem->FirstChildElement("place"); placeElem; placeElem = placeElem->NextSiblingElement("place")) {
-            parsePlace(placeElem, net);
+        for (XMLElement* placeElem = pageElem->FirstChildElement(); placeElem; placeElem = placeElem->NextSiblingElement()) {
+            if (string(placeElem->Name()).find("place") != string::npos) parsePlace(placeElem, net);
         }
 
-        for(XMLElement* transElem = pageElem->FirstChildElement("transition"); transElem; transElem = transElem->NextSiblingElement("transition")) {
-            parseTransition(transElem, net);
+        for (XMLElement* transElem = pageElem->FirstChildElement(); transElem; transElem = transElem->NextSiblingElement()) {
+            if (string(transElem->Name()).find("transition") != string::npos) parseTransition(transElem, net);
         }
 
-        for(XMLElement* arcElem = pageElem->FirstChildElement("arc"); arcElem; arcElem = arcElem->NextSiblingElement("arc")) {
-            parseArc(arcElem, net);
+        for (XMLElement* arcElem = pageElem->FirstChildElement(); arcElem; arcElem = arcElem->NextSiblingElement()) {
+            if (string(arcElem->Name()).find("arc") != string::npos) parseArc(arcElem, net);
         }
 
         nets.push_back(net);
@@ -48,18 +56,33 @@ bool PNMLParser::loadFile(const string& filename) {
 
 void PNMLParser::parsePlace(XMLElement* placeElem, Net& net) {
     Place p;
-    p.id = placeElem->Attribute("id");
+    p.id = placeElem->Attribute("id") ? placeElem->Attribute("id") : "";
+    p.tokens = 0;
+    p.name = "";
+    p.pos = {0, 0};
 
-    XMLElement* nameElem = placeElem->FirstChildElement("name")->FirstChildElement("text");
-    if (nameElem && nameElem->GetText()) p.name = nameElem->GetText();
+    for (XMLElement* c = placeElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
+        if (string(c->Name()).find("name") != string::npos) {
+            XMLElement* textElem = c->FirstChildElement("text");
+            if (textElem && textElem->GetText()) p.name = textElem->GetText();
+        }
+    }
 
-    XMLElement* markElem = placeElem->FirstChildElement("initialMarking")->FirstChildElement("text");
-    if (markElem && markElem->GetText()) p.tokens = stoi(markElem->GetText());
+    for (XMLElement* c = placeElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
+        if (string(c->Name()).find("initialMarking") != string::npos) {
+            XMLElement* textElem = c->FirstChildElement("text");
+            if (textElem && textElem->GetText()) p.tokens = stoi(textElem->GetText());
+        }
+    }
 
-    XMLElement* posElem = placeElem->FirstChildElement("graphics")->FirstChildElement("position");
-    if (posElem) {
-        posElem->QueryFloatAttribute("x", &p.pos.x);
-        posElem->QueryFloatAttribute("y", &p.pos.y);
+    for (XMLElement* c = placeElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
+        if (string(c->Name()).find("graphics") != string::npos) {
+            XMLElement* posElem = c->FirstChildElement("position");
+            if (posElem) {
+                posElem->QueryFloatAttribute("x", &p.pos.x);
+                posElem->QueryFloatAttribute("y", &p.pos.y);
+            }
+        }
     }
 
     net.places.push_back(p);
@@ -67,15 +90,25 @@ void PNMLParser::parsePlace(XMLElement* placeElem, Net& net) {
 
 void PNMLParser::parseTransition(XMLElement* transElem, Net& net) {
     Transition t;
-    t.id = transElem->Attribute("id");
+    t.id = transElem->Attribute("id") ? transElem->Attribute("id") : "";
+    t.name = "";
+    t.pos = {0, 0};
 
-    XMLElement* nameElem = transElem->FirstChildElement("name")->FirstChildElement("text");
-    if (nameElem && nameElem->GetText()) t.name = nameElem->GetText();
+    for (XMLElement* c = transElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
+        if (string(c->Name()).find("name") != string::npos) {
+            XMLElement* textElem = c->FirstChildElement("text");
+            if (textElem && textElem->GetText()) t.name = textElem->GetText();
+        }
+    }
 
-    XMLElement* posElem = transElem->FirstChildElement("graphics")->FirstChildElement("position");
-    if (posElem) {
-        posElem->QueryFloatAttribute("x", &t.pos.x);
-        posElem->QueryFloatAttribute("y", &t.pos.y);
+    for (XMLElement* c = transElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
+        if (string(c->Name()).find("graphics") != string::npos) {
+            XMLElement* posElem = c->FirstChildElement("position");
+            if (posElem) {
+                posElem->QueryFloatAttribute("x", &t.pos.x);
+                posElem->QueryFloatAttribute("y", &t.pos.y);
+            }
+        }
     }
 
     net.transitions.push_back(t);
@@ -83,12 +116,17 @@ void PNMLParser::parseTransition(XMLElement* transElem, Net& net) {
 
 void PNMLParser::parseArc(XMLElement* arcElem, Net& net) {
     Arc a;
-    a.id = arcElem->Attribute("id");
-    a.source = arcElem->Attribute("source");
-    a.target = arcElem->Attribute("target");
+    a.id = arcElem->Attribute("id") ? arcElem->Attribute("id") : "";
+    a.source = arcElem->Attribute("source") ? arcElem->Attribute("source") : "";
+    a.target = arcElem->Attribute("target") ? arcElem->Attribute("target") : "";
+    a.weight = 1;
 
-    XMLElement* insElem = arcElem->FirstChildElement("inscription")->FirstChildElement("text");
-    if (insElem && insElem->GetText()) a.weight = stoi(insElem->GetText());
+    for (XMLElement* c = arcElem->FirstChildElement(); c; c = c->NextSiblingElement()) {
+        if (string(c->Name()).find("inscription") != string::npos) {
+            XMLElement* textElem = c->FirstChildElement("text");
+            if (textElem && textElem->GetText()) a.weight = stoi(textElem->GetText());
+        }
+    }
 
     net.arcs.push_back(a);
 }

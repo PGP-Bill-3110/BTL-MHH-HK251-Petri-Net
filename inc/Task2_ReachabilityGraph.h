@@ -6,26 +6,31 @@
 #include <queue>
 #include <set>
 
-struct Marking {
+struct Marking
+{
     vector<int> m;
 
-    bool operator==(const Marking& other) const {
+    bool operator==(const Marking &other) const
+    {
         return m == other.m;
     }
 };
 
-struct MarkingHash {
-    size_t operator()(const Marking& mk) const {
+struct MarkingHash
+{
+    size_t operator()(const Marking &mk) const
+    {
         size_t h = 0;
         for (int x : mk.m)
-            h = h * 1315423911u + x; //Jenkens hash
+            h = h * 1315423911u + x; // Jenkens hash
         return h;
     }
 };
 
-class Graph {
+class Graph
+{
 public:
-    Graph(const Net& net);
+    Graph(const Net &net);
 
     void computeBFS();
     void printMarkings();
@@ -45,10 +50,9 @@ private:
     unordered_set<Marking, MarkingHash> visited;
 
     void buildIOMaps();
-    bool checkMissingArc(const std::string& tid);
-    bool isEnabled(const string& tid, const Marking& mk);
-    Marking fire(const string& tid, const Marking& mk);
+    bool checkMissingArc(const std::string &tid);
+    bool isEnabled(const string &tid, const Marking &mk);
+    Marking fire(const string &tid, const Marking &mk);
 };
-
 
 #endif

@@ -1,0 +1,331 @@
+<?xml version="1.0" ?>
+<pnml>
+   <net id="parallel_12" type="http://www.pnml.org/version-2009/grammar/ptnet">
+      <page id="page1">
+         <place id="P_idle_0">
+            <name>
+               <text>P_idle_0</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_0">
+            <name>
+               <text>P_run_0</text>
+            </name>
+         </place>
+         <place id="P_idle_1">
+            <name>
+               <text>P_idle_1</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_1">
+            <name>
+               <text>P_run_1</text>
+            </name>
+         </place>
+         <place id="P_idle_2">
+            <name>
+               <text>P_idle_2</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_2">
+            <name>
+               <text>P_run_2</text>
+            </name>
+         </place>
+         <place id="P_idle_3">
+            <name>
+               <text>P_idle_3</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_3">
+            <name>
+               <text>P_run_3</text>
+            </name>
+         </place>
+         <place id="P_idle_4">
+            <name>
+               <text>P_idle_4</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_4">
+            <name>
+               <text>P_run_4</text>
+            </name>
+         </place>
+         <place id="P_idle_5">
+            <name>
+               <text>P_idle_5</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_5">
+            <name>
+               <text>P_run_5</text>
+            </name>
+         </place>
+         <place id="P_idle_6">
+            <name>
+               <text>P_idle_6</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_6">
+            <name>
+               <text>P_run_6</text>
+            </name>
+         </place>
+         <place id="P_idle_7">
+            <name>
+               <text>P_idle_7</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_7">
+            <name>
+               <text>P_run_7</text>
+            </name>
+         </place>
+         <place id="P_idle_8">
+            <name>
+               <text>P_idle_8</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_8">
+            <name>
+               <text>P_run_8</text>
+            </name>
+         </place>
+         <place id="P_idle_9">
+            <name>
+               <text>P_idle_9</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_9">
+            <name>
+               <text>P_run_9</text>
+            </name>
+         </place>
+         <place id="P_idle_10">
+            <name>
+               <text>P_idle_10</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_10">
+            <name>
+               <text>P_run_10</text>
+            </name>
+         </place>
+         <place id="P_idle_11">
+            <name>
+               <text>P_idle_11</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="P_run_11">
+            <name>
+               <text>P_run_11</text>
+            </name>
+         </place>
+         <transition id="T_start_0">
+            <name>
+               <text>T_start_0</text>
+            </name>
+         </transition>
+         <transition id="T_stop_0">
+            <name>
+               <text>T_stop_0</text>
+            </name>
+         </transition>
+         <transition id="T_start_1">
+            <name>
+               <text>T_start_1</text>
+            </name>
+         </transition>
+         <transition id="T_stop_1">
+            <name>
+               <text>T_stop_1</text>
+            </name>
+         </transition>
+         <transition id="T_start_2">
+            <name>
+               <text>T_start_2</text>
+            </name>
+         </transition>
+         <transition id="T_stop_2">
+            <name>
+               <text>T_stop_2</text>
+            </name>
+         </transition>
+         <transition id="T_start_3">
+            <name>
+               <text>T_start_3</text>
+            </name>
+         </transition>
+         <transition id="T_stop_3">
+            <name>
+               <text>T_stop_3</text>
+            </name>
+         </transition>
+         <transition id="T_start_4">
+            <name>
+               <text>T_start_4</text>
+            </name>
+         </transition>
+         <transition id="T_stop_4">
+            <name>
+               <text>T_stop_4</text>
+            </name>
+         </transition>
+         <transition id="T_start_5">
+            <name>
+               <text>T_start_5</text>
+            </name>
+         </transition>
+         <transition id="T_stop_5">
+            <name>
+               <text>T_stop_5</text>
+            </name>
+         </transition>
+         <transition id="T_start_6">
+            <name>
+               <text>T_start_6</text>
+            </name>
+         </transition>
+         <transition id="T_stop_6">
+            <name>
+               <text>T_stop_6</text>
+            </name>
+         </transition>
+         <transition id="T_start_7">
+            <name>
+               <text>T_start_7</text>
+            </name>
+         </transition>
+         <transition id="T_stop_7">
+            <name>
+               <text>T_stop_7</text>
+            </name>
+         </transition>
+         <transition id="T_start_8">
+            <name>
+               <text>T_start_8</text>
+            </name>
+         </transition>
+         <transition id="T_stop_8">
+            <name>
+               <text>T_stop_8</text>
+            </name>
+         </transition>
+         <transition id="T_start_9">
+            <name>
+               <text>T_start_9</text>
+            </name>
+         </transition>
+         <transition id="T_stop_9">
+            <name>
+               <text>T_stop_9</text>
+            </name>
+         </transition>
+         <transition id="T_start_10">
+            <name>
+               <text>T_start_10</text>
+            </name>
+         </transition>
+         <transition id="T_stop_10">
+            <name>
+               <text>T_stop_10</text>
+            </name>
+         </transition>
+         <transition id="T_start_11">
+            <name>
+               <text>T_start_11</text>
+            </name>
+         </transition>
+         <transition id="T_stop_11">
+            <name>
+               <text>T_stop_11</text>
+            </name>
+         </transition>
+         <arc id="a_P_idle_0_T_start_0" source="P_idle_0" target="T_start_0"/>
+         <arc id="a_T_start_0_P_run_0" source="T_start_0" target="P_run_0"/>
+         <arc id="a_P_run_0_T_stop_0" source="P_run_0" target="T_stop_0"/>
+         <arc id="a_T_stop_0_P_idle_0" source="T_stop_0" target="P_idle_0"/>
+         <arc id="a_P_idle_1_T_start_1" source="P_idle_1" target="T_start_1"/>
+         <arc id="a_T_start_1_P_run_1" source="T_start_1" target="P_run_1"/>
+         <arc id="a_P_run_1_T_stop_1" source="P_run_1" target="T_stop_1"/>
+         <arc id="a_T_stop_1_P_idle_1" source="T_stop_1" target="P_idle_1"/>
+         <arc id="a_P_idle_2_T_start_2" source="P_idle_2" target="T_start_2"/>
+         <arc id="a_T_start_2_P_run_2" source="T_start_2" target="P_run_2"/>
+         <arc id="a_P_run_2_T_stop_2" source="P_run_2" target="T_stop_2"/>
+         <arc id="a_T_stop_2_P_idle_2" source="T_stop_2" target="P_idle_2"/>
+         <arc id="a_P_idle_3_T_start_3" source="P_idle_3" target="T_start_3"/>
+         <arc id="a_T_start_3_P_run_3" source="T_start_3" target="P_run_3"/>
+         <arc id="a_P_run_3_T_stop_3" source="P_run_3" target="T_stop_3"/>
+         <arc id="a_T_stop_3_P_idle_3" source="T_stop_3" target="P_idle_3"/>
+         <arc id="a_P_idle_4_T_start_4" source="P_idle_4" target="T_start_4"/>
+         <arc id="a_T_start_4_P_run_4" source="T_start_4" target="P_run_4"/>
+         <arc id="a_P_run_4_T_stop_4" source="P_run_4" target="T_stop_4"/>
+         <arc id="a_T_stop_4_P_idle_4" source="T_stop_4" target="P_idle_4"/>
+         <arc id="a_P_idle_5_T_start_5" source="P_idle_5" target="T_start_5"/>
+         <arc id="a_T_start_5_P_run_5" source="T_start_5" target="P_run_5"/>
+         <arc id="a_P_run_5_T_stop_5" source="P_run_5" target="T_stop_5"/>
+         <arc id="a_T_stop_5_P_idle_5" source="T_stop_5" target="P_idle_5"/>
+         <arc id="a_P_idle_6_T_start_6" source="P_idle_6" target="T_start_6"/>
+         <arc id="a_T_start_6_P_run_6" source="T_start_6" target="P_run_6"/>
+         <arc id="a_P_run_6_T_stop_6" source="P_run_6" target="T_stop_6"/>
+         <arc id="a_T_stop_6_P_idle_6" source="T_stop_6" target="P_idle_6"/>
+         <arc id="a_P_idle_7_T_start_7" source="P_idle_7" target="T_start_7"/>
+         <arc id="a_T_start_7_P_run_7" source="T_start_7" target="P_run_7"/>
+         <arc id="a_P_run_7_T_stop_7" source="P_run_7" target="T_stop_7"/>
+         <arc id="a_T_stop_7_P_idle_7" source="T_stop_7" target="P_idle_7"/>
+         <arc id="a_P_idle_8_T_start_8" source="P_idle_8" target="T_start_8"/>
+         <arc id="a_T_start_8_P_run_8" source="T_start_8" target="P_run_8"/>
+         <arc id="a_P_run_8_T_stop_8" source="P_run_8" target="T_stop_8"/>
+         <arc id="a_T_stop_8_P_idle_8" source="T_stop_8" target="P_idle_8"/>
+         <arc id="a_P_idle_9_T_start_9" source="P_idle_9" target="T_start_9"/>
+         <arc id="a_T_start_9_P_run_9" source="T_start_9" target="P_run_9"/>
+         <arc id="a_P_run_9_T_stop_9" source="P_run_9" target="T_stop_9"/>
+         <arc id="a_T_stop_9_P_idle_9" source="T_stop_9" target="P_idle_9"/>
+         <arc id="a_P_idle_10_T_start_10" source="P_idle_10" target="T_start_10"/>
+         <arc id="a_T_start_10_P_run_10" source="T_start_10" target="P_run_10"/>
+         <arc id="a_P_run_10_T_stop_10" source="P_run_10" target="T_stop_10"/>
+         <arc id="a_T_stop_10_P_idle_10" source="T_stop_10" target="P_idle_10"/>
+         <arc id="a_P_idle_11_T_start_11" source="P_idle_11" target="T_start_11"/>
+         <arc id="a_T_start_11_P_run_11" source="T_start_11" target="P_run_11"/>
+         <arc id="a_P_run_11_T_stop_11" source="P_run_11" target="T_stop_11"/>
+         <arc id="a_T_stop_11_P_idle_11" source="T_stop_11" target="P_idle_11"/>
+      </page>
+   </net>
+</pnml>

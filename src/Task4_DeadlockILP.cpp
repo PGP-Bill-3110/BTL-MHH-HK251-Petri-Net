@@ -1,122 +1,68 @@
 #include "../inc/Task4_DeadlockILP.h"
-#include <cmath>
 
-DeadlockILP::DeadlockILP(const Net& inputNet, BDDReacher* reacher) 
-    : net(inputNet), bddReacher(reacher), foundDeadlock(false), checkedCount(0) {
-    
-    // Map place id -> index
-    for(int i = 0; i < net.places.size(); i++){
-        placeIdToIndex[net.places[i].id] = i;
-    }
-    
+DeadlockILP::DeadlockILP(const Net& net, BDDReacher* bddReacher) 
+    : net(net), bddReacher(bddReacher), foundDeadlock(false), checkedCount(0) {
     buildIOMaps();
 }
 
-DeadlockILP::~DeadlockILP(){
-}
+DeadlockILP::~DeadlockILP() {}
 
-void DeadlockILP::buildIOMaps(){
-    inputOf.clear();
-    for(const auto& t : net.transitions){
-        inputOf[t.id] = {};
+void DeadlockILP::buildIOMaps() {
+    placeIdToIndex.clear();
+    for (size_t i = 0; i < net.places.size(); ++i) {
+        placeIdToIndex[net.places[i].id] = i;
     }
     
-    for(const auto& arc : net.arcs){
-        bool srcIsPlace = false;
-        int placeIndex = -1;
-        
-        for(int i = 0; i < net.places.size(); i++){
-            if(net.places[i].id == arc.source){
-                srcIsPlace = true;
-                placeIndex = i;
-                break;
-            }
-        }
-        
-        if(srcIsPlace){
-            inputOf[arc.target].push_back(placeIndex);
+    inputOf.clear();
+    for (const auto& arc : net.arcs) {
+        if (placeIdToIndex.find(arc.source) != placeIdToIndex.end()) {
+            inputOf[arc.target].push_back(placeIdToIndex[arc.source]);
         }
     }
 }
 
-bool DeadlockILP::isEnabled(const string& tid, const Marking& mk){
-    for(int pIndex : inputOf[tid]){
-        if(mk.m[pIndex] != 1){
-            return false;
+bool DeadlockILP::findDeadlock() {
+    BDD reach = bddReacher->getReachableSet();
+    Cudd& mgr = bddReacher->getManager();
+    
+    BDD allDisabled = mgr.bddOne();
+
+    for (const auto& t : net.transitions) {
+        BDD t_disabled = mgr.bddZero(); 
+        
+        if (inputOf.count(t.id)) {
+            for (int p_idx : inputOf[t.id]) {
+                BDD p_var = bddReacher->getVar(p_idx * 2);  
+                t_disabled |= (!p_var); 
+            }
         }
+        allDisabled &= t_disabled;
     }
+
+    BDD deadlockSet = reach & allDisabled;
+
+    if (deadlockSet.IsZero()) {
+        foundDeadlock = false;
+        return false;
+    }
+
+    foundDeadlock = true;
+    cout << "[Found] Deadlock state(s) detected in symbolic space.\n";
+    
+    deadlockSet.PrintMinterm(); 
+    
     return true;
 }
 
-bool DeadlockILP::isDeadMarking(const Marking& mk){
-    for(const auto& t : net.transitions){
-        if(isEnabled(t.id, mk)){
-            return false; 
-        }
-    }
-    return true; 
-}
-
-bool DeadlockILP::findDeadlock(){
-    cout << "\n=== Task 4: Deadlock Detection (BDD Enumeration) ===" << endl;
-    
-    BDD reachSet = bddReacher->getReachableSet();
-    
-    if(reachSet.IsZero()){
-        cout << "[Task4 ERROR] Reachable set is empty. Run computeBDD() first!" << endl;
-        return false;
-    }
-    
-    int numPlaces = net.places.size();
-    
-    // CUDD trả về mảng int (0, 1, 2), KHÔNG PHẢI char
-    int* cube; 
-    CUDD_VALUE_TYPE value;
-    DdGen* gen = Cudd_FirstCube(reachSet.manager(), reachSet.getNode(), &cube, &value);
-    
-    foundDeadlock = false;
-    checkedCount = 0;
-    
-    if(gen){
-        do {
-            checkedCount++;
-            Marking mk;
-            mk.m.resize(numPlaces);
-            
-            for(int i = 0; i < numPlaces; i++){
-                int varIndex = i * 2; // Biến chẵn là trạng thái hiện tại
-                // cube[varIndex] == 1 nghĩa là có token
-                if(cube[varIndex] == 1){
-                    mk.m[i] = 1;
-                } else {
-                    mk.m[i] = 0;
-                }
-            }
-            
-            if(isDeadMarking(mk)){
-                foundDeadlock = true;
-                deadlockMarking = mk;
-                Cudd_GenFree(gen); // Dừng enumerate
-                return true;
-            }
-            
-        } while(Cudd_NextCube(gen, &cube, &value) != 0);
-        
-        Cudd_GenFree(gen);
-    }
-    
-    return false;
-}
-
-void DeadlockILP::printResult(){
-    cout << "Checked " << checkedCount << " markings." << endl;
-    if(foundDeadlock){
-        cout << "[RESULT] DEADLOCK FOUND!" << endl;
-        cout << "Deadlock Marking: [ ";
-        for(int x : deadlockMarking.m) cout << x << " ";
-        cout << "]" << endl;
+void DeadlockILP::printResult() {
+    cout << "\n=== Task 4: Deadlock Detection (Symbolic Logic) ===\n";
+    if (foundDeadlock) {
+        cout << "[RESULT] DEADLOCK FOUND!\n";
     } else {
-        cout << "[RESULT] NO DEADLOCK FOUND." << endl;
+        cout << "[RESULT] NO DEADLOCK FOUND.\n";
     }
-    cout << string(40, '=') << endl;
+    cout << "========================================\n";
 }
+
+bool DeadlockILP::isDeadMarking(const Marking& mk) { return false; }
+bool DeadlockILP::isEnabled(const string& tid, const Marking& mk) { return false; }

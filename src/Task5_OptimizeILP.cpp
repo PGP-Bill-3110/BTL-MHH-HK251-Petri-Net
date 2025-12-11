@@ -1,21 +1,11 @@
 #include "../inc/Task5_OptimizeILP.h"
-#include "Task1_PNMLParser.h"
-#include "Task3_BDD_SymbolicReach.h"
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <map>
 #include <algorithm>
-#include <limits> 
 
-OptimizeILP::OptimizeILP(const Net& inputNet, BDDReacher* reacher) 
-    : net(inputNet), bddReacher(reacher) {
-    
-    // Khởi tạo trọng số mặc định ban đầu là 1
+OptimizeILP::OptimizeILP(const Net& net, BDDReacher* bddReacher) 
+    : net(net), bddReacher(bddReacher) {
     initDefaultWeights();
-    
-    // Reset kết quả
-    result.found = false;
-    result.maxValue = std::numeric_limits<long long>::min();
 }
 
 OptimizeILP::~OptimizeILP() {}
@@ -26,119 +16,124 @@ void OptimizeILP::initDefaultWeights() {
 
 void OptimizeILP::setWeights(const std::map<std::string, int>& weights) {
     for (size_t i = 0; i < net.places.size(); ++i) {
-        string id = net.places[i].id;
-        if (weights.count(id)) {
-            placeWeights[i] = weights.at(id);
-        } else {
-            placeWeights[i] = 0; 
+        if (weights.count(net.places[i].id)) {
+            placeWeights[i] = weights.at(net.places[i].id);
         }
     }
 }
 
 void OptimizeILP::generateRandomWeights(int minVal, int maxVal) {
-    srand(time(NULL)); 
-    
-    cout << "Generated Random Weights (c vector):" << endl;
+    cout << "Generated Random Weights (c vector):\n";
     for (size_t i = 0; i < net.places.size(); ++i) {
         placeWeights[i] = minVal + rand() % (maxVal - minVal + 1);
-        
-        cout << "  " << net.places[i].id << ": " << placeWeights[i] << endl;
+        cout << "  " << net.places[i].id << ": " << placeWeights[i] << "\n";
     }
 }
 
-long long OptimizeILP::calculateObjective(const Marking& mk) {
-    long long total = 0;
-    for (size_t i = 0; i < mk.m.size(); ++i) {
-        if (mk.m[i] == 1) {
-            total += placeWeights[i];
-        }
+map<DdNode*, long long> memo;
+
+long long findMaxWeightRecursive(DdManager* dd, DdNode* node, const vector<int>& weights) {
+    if (Cudd_IsConstant(node)) {
+        if (node == Cudd_ReadOne(dd)) return 0; 
+        return -1e18; 
     }
-    return total;
+
+    if (memo.find(node) != memo.end()) {
+        return memo[node];
+    }
+
+    int index = Cudd_NodeReadIndex(node);
+    int place_idx = index / 2;
+
+    DdNode* thenChild = Cudd_T(node);
+    DdNode* elseChild = Cudd_E(node);
+
+    long long w_then = findMaxWeightRecursive(dd, thenChild, weights);
+    long long w_else = findMaxWeightRecursive(dd, elseChild, weights);
+
+    long long current_w = (place_idx < weights.size()) ? weights[place_idx] : 0;
+
+    if (index % 2 != 0) current_w = 0;
+
+    long long val_then = (w_then > -1e17) ? (current_w + w_then) : -1e18;
+    long long val_else = (w_else > -1e17) ? w_else : -1e18;
+
+    long long res = max(val_then, val_else);
+    memo[node] = res;
+    return res;
 }
 
-void OptimizeILP::findOptimal() {
-    cout << "\n=== Task 5: Optimization over Reachable Markings ===" << endl;
+void recoverOptimalMarking(DdManager* dd, DdNode* node, const vector<int>& weights, vector<int>& marking, map<DdNode*, long long>& memo) {
+    if (Cudd_IsConstant(node)) return;
 
-    BDD reachSet = bddReacher->getReachableSet();
+    int index = Cudd_NodeReadIndex(node);
+    int place_idx = index / 2;
     
-    if (reachSet.IsZero()) {
-        cout << "[Error] Reachable set is empty. Run Task 3 first!" << endl;
-        result.found = false;
-        return;
-    }
+    DdNode* thenChild = Cudd_T(node);
+    DdNode* elseChild = Cudd_E(node);
 
-    int numPlaces = net.places.size();
-    int* cube; 
-    CUDD_VALUE_TYPE value;
-    DdGen* gen = Cudd_FirstCube(reachSet.manager(), reachSet.getNode(), &cube, &value);
-    
-    result.maxValue = std::numeric_limits<long long>::min();
-    result.found = false;
-    int checkedCubes = 0;
+    long long w_then = findMaxWeightRecursive(dd, thenChild, weights);
+    long long w_else = findMaxWeightRecursive(dd, elseChild, weights);
 
-    if (gen) {
-        do {
-            checkedCubes++;
-            Marking currentMarking;
-            currentMarking.m.resize(numPlaces);
-            long long currentScore = 0;
+    long long current_w = (place_idx < weights.size() && index % 2 == 0) ? weights[place_idx] : 0;
 
-            for (int i = 0; i < numPlaces; i++) {
-                int varIndex = i * 2; 
-                int val = cube[varIndex]; 
-                if (val == 1) {
-                    currentMarking.m[i] = 1;
-                    currentScore += placeWeights[i];
-                } 
-                else if (val == 0) {               
-                    currentMarking.m[i] = 0;
-                } 
-                else if (val == 2) {
-                    
-                    if (placeWeights[i] > 0) {
-                        currentMarking.m[i] = 1;
-                        currentScore += placeWeights[i];
-                    } else {
-                        currentMarking.m[i] = 0;
-                    }
-                }
-            }
+    long long val_then = (w_then > -1e17) ? (current_w + w_then) : -1e18;
+    long long val_else = (w_else > -1e17) ? w_else : -1e18;
 
-            if (!result.found || currentScore > result.maxValue) {
-                result.maxValue = currentScore;
-                result.optimalMarking = currentMarking;
-                result.found = true;
-            }
-
-        } while (Cudd_NextCube(gen, &cube, &value) != 0);
-        
-        Cudd_GenFree(gen);
-    }
-    
-    cout << "Checked " << checkedCubes << " disjoint cubes from BDD." << endl;
-}
-
-void OptimizeILP::printResult() {
-    cout << "\n" << string(60, '=') << endl;
-    cout << "TASK 5: OPTIMIZATION RESULT" << endl;
-    cout << string(60, '=') << endl;
-    
-    if (result.found) {
-        cout << "Max Objective Value (c^T * M): " << result.maxValue << endl;
-        cout << "Optimal Marking: [ ";
-        for (int x : result.optimalMarking.m) cout << x << " ";
-        cout << "]" << endl;
-        
-        // In chi tiết place nào đóng góp vào kết quả
-        cout << "\nContribution details:" << endl;
-        for(size_t i=0; i<net.places.size(); ++i) {
-            if(result.optimalMarking.m[i] == 1) {
-                cout << "  + " << net.places[i].id << " (weight=" << placeWeights[i] << ")" << endl;
-            }
-        }
-        
+    if (val_then >= val_else) {
+        if (index % 2 == 0 && place_idx < marking.size()) marking[place_idx] = 1;
+        recoverOptimalMarking(dd, thenChild, weights, marking, memo);
     } else {
-        cout << "Status: NO SOLUTION FOUND (Reachable set might be empty)" << endl;
+        if (index % 2 == 0 && place_idx < marking.size()) marking[place_idx] = 0;
+        recoverOptimalMarking(dd, elseChild, weights, marking, memo);
     }
-    cout << string(60, '=') << endl;
 }
+void OptimizeILP::findOptimal() {
+    BDD reach = bddReacher->getReachableSet();
+    Cudd& mgr = bddReacher->getManager();
+    DdManager* dd = mgr.getManager();
+    DdNode* node = reach.getNode();
+
+    result.found = false;
+    result.maxValue = -1; 
+
+    DdGen *gen;
+    int *cube;
+    CUDD_VALUE_TYPE value;
+
+    Cudd_ForeachCube(dd, node, gen, cube, value) {
+        long long currentWeight = 0;
+        Marking currentM;
+        currentM.m.assign(net.places.size(), 0);
+
+        for (size_t i = 0; i < net.places.size(); ++i) {
+            int bddIndex = i * 2;
+  
+            if (cube[bddIndex] == 1 || (cube[bddIndex] == 2 && placeWeights[i] > 0)) {
+                currentWeight += placeWeights[i];
+                currentM.m[i] = 1;
+            }
+        }
+
+        if (!result.found || currentWeight > result.maxValue) {
+            result.maxValue = currentWeight;
+            result.optimalMarking = currentM;
+            result.found = true;
+        }
+    }
+}
+void OptimizeILP::printResult() {
+    cout << "\n=== Task 5: Optimization Result (Symbolic DP) ===\n";
+    if (result.found) {
+        cout << "Max Objective Value (c^T * M): " << result.maxValue << "\n";
+        cout << "Optimal Marking: [ ";
+        // SỬA LỖI: Duyệt qua .m
+        for (int val : result.optimalMarking.m) cout << val << " ";
+        cout << "]\n";
+    } else {
+        cout << "No reachable marking found.\n";
+    }
+    cout << "============================================================\n";
+}
+
+long long OptimizeILP::calculateObjective(const Marking& mk) { return 0; }

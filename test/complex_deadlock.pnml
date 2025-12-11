@@ -1,0 +1,262 @@
+<?xml version="1.0" ?>
+<pnml>
+   <net id="dining_5" type="http://www.pnml.org/version-2009/grammar/ptnet">
+      <page id="page1">
+         <place id="Fork_0">
+            <name>
+               <text>Fork_0</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Think_0">
+            <name>
+               <text>Think_0</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Eat_0">
+            <name>
+               <text>Eat_0</text>
+            </name>
+         </place>
+         <place id="HasL_0">
+            <name>
+               <text>HasL_0</text>
+            </name>
+         </place>
+         <place id="Fork_1">
+            <name>
+               <text>Fork_1</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Think_1">
+            <name>
+               <text>Think_1</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Eat_1">
+            <name>
+               <text>Eat_1</text>
+            </name>
+         </place>
+         <place id="HasL_1">
+            <name>
+               <text>HasL_1</text>
+            </name>
+         </place>
+         <place id="Fork_2">
+            <name>
+               <text>Fork_2</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Think_2">
+            <name>
+               <text>Think_2</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Eat_2">
+            <name>
+               <text>Eat_2</text>
+            </name>
+         </place>
+         <place id="HasL_2">
+            <name>
+               <text>HasL_2</text>
+            </name>
+         </place>
+         <place id="Fork_3">
+            <name>
+               <text>Fork_3</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Think_3">
+            <name>
+               <text>Think_3</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Eat_3">
+            <name>
+               <text>Eat_3</text>
+            </name>
+         </place>
+         <place id="HasL_3">
+            <name>
+               <text>HasL_3</text>
+            </name>
+         </place>
+         <place id="Fork_4">
+            <name>
+               <text>Fork_4</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Think_4">
+            <name>
+               <text>Think_4</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="Eat_4">
+            <name>
+               <text>Eat_4</text>
+            </name>
+         </place>
+         <place id="HasL_4">
+            <name>
+               <text>HasL_4</text>
+            </name>
+         </place>
+         <transition id="TakeL_0">
+            <name>
+               <text>TakeL_0</text>
+            </name>
+         </transition>
+         <transition id="TakeR_0">
+            <name>
+               <text>TakeR_0</text>
+            </name>
+         </transition>
+         <transition id="Drop_0">
+            <name>
+               <text>Drop_0</text>
+            </name>
+         </transition>
+         <transition id="TakeL_1">
+            <name>
+               <text>TakeL_1</text>
+            </name>
+         </transition>
+         <transition id="TakeR_1">
+            <name>
+               <text>TakeR_1</text>
+            </name>
+         </transition>
+         <transition id="Drop_1">
+            <name>
+               <text>Drop_1</text>
+            </name>
+         </transition>
+         <transition id="TakeL_2">
+            <name>
+               <text>TakeL_2</text>
+            </name>
+         </transition>
+         <transition id="TakeR_2">
+            <name>
+               <text>TakeR_2</text>
+            </name>
+         </transition>
+         <transition id="Drop_2">
+            <name>
+               <text>Drop_2</text>
+            </name>
+         </transition>
+         <transition id="TakeL_3">
+            <name>
+               <text>TakeL_3</text>
+            </name>
+         </transition>
+         <transition id="TakeR_3">
+            <name>
+               <text>TakeR_3</text>
+            </name>
+         </transition>
+         <transition id="Drop_3">
+            <name>
+               <text>Drop_3</text>
+            </name>
+         </transition>
+         <transition id="TakeL_4">
+            <name>
+               <text>TakeL_4</text>
+            </name>
+         </transition>
+         <transition id="TakeR_4">
+            <name>
+               <text>TakeR_4</text>
+            </name>
+         </transition>
+         <transition id="Drop_4">
+            <name>
+               <text>Drop_4</text>
+            </name>
+         </transition>
+         <arc id="a_Think_0_TakeL_0" source="Think_0" target="TakeL_0"/>
+         <arc id="a_Fork_0_TakeL_0" source="Fork_0" target="TakeL_0"/>
+         <arc id="a_TakeL_0_HasL_0" source="TakeL_0" target="HasL_0"/>
+         <arc id="a_HasL_0_TakeR_0" source="HasL_0" target="TakeR_0"/>
+         <arc id="a_Fork_1_TakeR_0" source="Fork_1" target="TakeR_0"/>
+         <arc id="a_TakeR_0_Eat_0" source="TakeR_0" target="Eat_0"/>
+         <arc id="a_Eat_0_Drop_0" source="Eat_0" target="Drop_0"/>
+         <arc id="a_Drop_0_Think_0" source="Drop_0" target="Think_0"/>
+         <arc id="a_Drop_0_Fork_0" source="Drop_0" target="Fork_0"/>
+         <arc id="a_Drop_0_Fork_1" source="Drop_0" target="Fork_1"/>
+         <arc id="a_Think_1_TakeL_1" source="Think_1" target="TakeL_1"/>
+         <arc id="a_Fork_1_TakeL_1" source="Fork_1" target="TakeL_1"/>
+         <arc id="a_TakeL_1_HasL_1" source="TakeL_1" target="HasL_1"/>
+         <arc id="a_HasL_1_TakeR_1" source="HasL_1" target="TakeR_1"/>
+         <arc id="a_Fork_2_TakeR_1" source="Fork_2" target="TakeR_1"/>
+         <arc id="a_TakeR_1_Eat_1" source="TakeR_1" target="Eat_1"/>
+         <arc id="a_Eat_1_Drop_1" source="Eat_1" target="Drop_1"/>
+         <arc id="a_Drop_1_Think_1" source="Drop_1" target="Think_1"/>
+         <arc id="a_Drop_1_Fork_1" source="Drop_1" target="Fork_1"/>
+         <arc id="a_Drop_1_Fork_2" source="Drop_1" target="Fork_2"/>
+         <arc id="a_Think_2_TakeL_2" source="Think_2" target="TakeL_2"/>
+         <arc id="a_Fork_2_TakeL_2" source="Fork_2" target="TakeL_2"/>
+         <arc id="a_TakeL_2_HasL_2" source="TakeL_2" target="HasL_2"/>
+         <arc id="a_HasL_2_TakeR_2" source="HasL_2" target="TakeR_2"/>
+         <arc id="a_Fork_3_TakeR_2" source="Fork_3" target="TakeR_2"/>
+         <arc id="a_TakeR_2_Eat_2" source="TakeR_2" target="Eat_2"/>
+         <arc id="a_Eat_2_Drop_2" source="Eat_2" target="Drop_2"/>
+         <arc id="a_Drop_2_Think_2" source="Drop_2" target="Think_2"/>
+         <arc id="a_Drop_2_Fork_2" source="Drop_2" target="Fork_2"/>
+         <arc id="a_Drop_2_Fork_3" source="Drop_2" target="Fork_3"/>
+         <arc id="a_Think_3_TakeL_3" source="Think_3" target="TakeL_3"/>
+         <arc id="a_Fork_3_TakeL_3" source="Fork_3" target="TakeL_3"/>
+         <arc id="a_TakeL_3_HasL_3" source="TakeL_3" target="HasL_3"/>
+         <arc id="a_HasL_3_TakeR_3" source="HasL_3" target="TakeR_3"/>
+         <arc id="a_Fork_4_TakeR_3" source="Fork_4" target="TakeR_3"/>
+         <arc id="a_TakeR_3_Eat_3" source="TakeR_3" target="Eat_3"/>
+         <arc id="a_Eat_3_Drop_3" source="Eat_3" target="Drop_3"/>
+         <arc id="a_Drop_3_Think_3" source="Drop_3" target="Think_3"/>
+         <arc id="a_Drop_3_Fork_3" source="Drop_3" target="Fork_3"/>
+         <arc id="a_Drop_3_Fork_4" source="Drop_3" target="Fork_4"/>
+         <arc id="a_Think_4_TakeL_4" source="Think_4" target="TakeL_4"/>
+         <arc id="a_Fork_4_TakeL_4" source="Fork_4" target="TakeL_4"/>
+         <arc id="a_TakeL_4_HasL_4" source="TakeL_4" target="HasL_4"/>
+         <arc id="a_HasL_4_TakeR_4" source="HasL_4" target="TakeR_4"/>
+         <arc id="a_Fork_0_TakeR_4" source="Fork_0" target="TakeR_4"/>
+         <arc id="a_TakeR_4_Eat_4" source="TakeR_4" target="Eat_4"/>
+         <arc id="a_Eat_4_Drop_4" source="Eat_4" target="Drop_4"/>
+         <arc id="a_Drop_4_Think_4" source="Drop_4" target="Think_4"/>
+         <arc id="a_Drop_4_Fork_4" source="Drop_4" target="Fork_4"/>
+         <arc id="a_Drop_4_Fork_0" source="Drop_4" target="Fork_0"/>
+      </page>
+   </net>
+</pnml>

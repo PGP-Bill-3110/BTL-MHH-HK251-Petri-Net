@@ -1,108 +1,91 @@
-#include "../inc/Task1_PNMLParser.h"
 #include "../inc/Task2_ReachabilityGraph.h"
 #include "../inc/Task3_BDD_SymbolicReach.h"
 #include "../inc/Task4_DeadlockILP.h"
 #include "../inc/Task5_OptimizeILP.h"
-
+#include <cmath>
+#include <chrono>
 #include <iostream>
-#include <iomanip>
-#include <chrono> 
 
 using namespace std;
+using namespace std::chrono;
 
-void printSeparator() {
-    cout << string(60, '=') << endl;
-}
+int main(int argc, char* argv[])
+{
+    // Đảm bảo file pnml nằm đúng đường dẫn test/example_2.pnml so với thư mục chạy lệnh
+    string filename = (argc > 1) ? argv[1] : "test/example_2.pnml";
 
-int main() {
-    // 1. Đọc file PNML (Mặc định là example_2.pnml để test deadlock)
-    string filename = "test/example_2.pnml";
-    
     PNMLParser parser;
-    if (!parser.loadFile(filename)) {
+    if (!parser.loadFile(filename))
+    {
         cout << "Failed to load file: " << filename << endl;
         return 1;
     }
 
     const vector<Net> &nets = parser.getNets();
-    if (nets.empty()) {
+
+    if (nets.empty())
+    {
         cout << "No nets found in file!" << endl;
         return 1;
     }
 
-    cout << "Loaded " << nets.size() << " net(s) from file: " << filename << endl;
+    cout << "Loaded " << nets.size() << " net(s) from file.\n\n";
 
-    // 2. Duyệt qua từng mạng Petri (Net) để chạy 5 Task
-    for (size_t i = 0; i < nets.size(); ++i) {
-        cout << "\n\n";
-        printSeparator();
-        cout << "NET #" << i + 1 << "   (ID = " << nets[i].id << ")" << endl;
+    for (size_t i = 0; i < nets.size(); ++i)
+    {
+        cout << "======================================\n";
+        cout << "NET #" << i + 1 << "   (ID = " << nets[i].id << ")\n";
         cout << "Places: " << nets[i].places.size()
              << ", Transitions: " << nets[i].transitions.size()
-             << ", Arcs: " << nets[i].arcs.size() << endl;
-        printSeparator();
+             << ", Arcs: " << nets[i].arcs.size() << "\n";
+        cout << "======================================\n";
 
-        // --- TASK 2: Explicit Reachability (BFS) ---
-        cout << "\n--- [Task 2] Explicit computation (BFS) ---" << endl;
-        auto start2 = chrono::high_resolution_clock::now();
-        
+        // --- TASK 2: Reachability Graph (BFS) ---
+        cout << "\n--- [Task 2] Explicit computation (BFS) ---\n";
+        auto startBFS = high_resolution_clock::now();
+
         Graph g(nets[i]);
-        cout << "Computing reachable markings..." << endl;
+        cout << "Computing reachable markings...\n";
         g.computeBFS();
+
+        auto endBFS = high_resolution_clock::now();
+        duration<double> timeBFS = endBFS - startBFS;
         g.printMarkings();
-        
-        auto end2 = chrono::high_resolution_clock::now();
-        chrono::duration<double> diff2 = end2 - start2;
-        cout << ">> BFS Execution Time: " << diff2.count() << " seconds." << endl;
+        cout << ">> BFS Execution Time: " << timeBFS.count() << " seconds.\n";
 
+        // --- TASK 3: Symbolic Reachability (BDD) ---
+        cout << "\n--- [Task 3] Symbolic computation (BDD) ---\n";
+        auto startBDD = high_resolution_clock::now();
 
-        // --- TASK 3, 4, 5 (Cần dùng chung BDD Manager) ---
-        try {
-            // --- TASK 3: Symbolic Reachability (BDD) ---
-            cout << "\n--- [Task 3] Symbolic computation (BDD) ---" << endl;
-            auto start3 = chrono::high_resolution_clock::now();
+        BDDReacher bddReacher(nets[i]); 
+        cout << "Computing reachable markings using BDD...\n";
+        bddReacher.computeBDD();
 
-            // Khởi tạo và tính toán BDD
-            BDDReacher bddReacher(nets[i]);
-            bddReacher.computeBDD();
-            
-            auto end3 = chrono::high_resolution_clock::now();
-            chrono::duration<double> diff3 = end3 - start3;
-            cout << ">> BDD Execution Time: " << diff3.count() << " seconds." << endl;
+        auto endBDD = high_resolution_clock::now();
+        duration<double> timeBDD = endBDD - startBDD;
 
+        bddReacher.printBDDMarkings();
+        cout << ">> BDD Execution Time: " << timeBDD.count() << " seconds.\n";
 
-            // --- TASK 4: Deadlock Detection ---
-            cout << "\n--- [Task 4] Deadlock Detection (ILP + BDD) ---" << endl;
-            auto start4 = chrono::high_resolution_clock::now();
-            cout << "Checking for deadlocks..." << endl;
+        // --- TASK 4: Deadlock Detection ---
+        cout << "\n--- [Task 4] Deadlock Detection ---\n";
+        DeadlockILP deadlockFinder(nets[i], &bddReacher);
+        cout << "Searching for deadlocks...\n";
+        deadlockFinder.findDeadlock();
+        deadlockFinder.printResult();
 
-            DeadlockILP deadlockFinder(nets[i], &bddReacher);
-            deadlockFinder.findDeadlock();
-            deadlockFinder.printResult();
-            
-            auto end4 = chrono::high_resolution_clock::now();
-            chrono::duration<double> diff4 = end4 - start4;
-            cout << ">> Task4 Execution Time: " << diff4.count() << " seconds." << endl;
+        // --- TASK 5: Optimization ---
+        cout << "\n--- [Task 5] Optimization (ILP over BDD) ---\n";
+        OptimizeILP optimizer(nets[i], &bddReacher);
 
+        // Random trọng số để test tối ưu hóa
+        optimizer.generateRandomWeights(1000, 50000);
 
-            // --- TASK 5: Optimization ---
-            cout << "\n--- [Task 5] Reachable Optimization ---" << endl;
-            auto start5 = chrono::high_resolution_clock::now();
-            
-            OptimizeILP optimizer(nets[i], &bddReacher);
-            optimizer.generateRandomWeights(-5, 10); // Random từ -5 đến 10
-            
-            optimizer.findOptimal();
-            optimizer.printResult();
-            
-            auto end5 = chrono::high_resolution_clock::now();
-            chrono::duration<double> diff5 = end5 - start5;
-            cout << ">> Task5 Execution Time: " << diff5.count() << " seconds." << endl;
+        cout << "Searching for optimal marking...\n";
+        optimizer.findOptimal();
+        optimizer.printResult();
 
-        } catch (const std::exception &e) {
-            cerr << "[CRITICAL ERROR] Exception in Symbolic Tasks: " << e.what() << endl;
-        }
+        cout << endl;
     }
-
     return 0;
 }

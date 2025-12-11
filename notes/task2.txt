@@ -1,0 +1,364 @@
+// #include "../inc/Task2_ReachabilityGraph.h"
+
+// Graph::Graph(const Net& net) {
+//     places = net.places;
+//     transitions = net.transitions;
+//     arcs = net.arcs;
+
+//     initial.m.resize(places.size());
+//     for (int i = 0; i < places.size(); i++)
+//         initial.m[i] = places[i].tokens;
+
+//     buildIOMaps();
+// }
+
+// void Graph::buildIOMaps() {
+//     inputOf.clear();
+//     outputOf.clear();
+
+//     for (const auto& t : transitions) {
+//         inputOf[t.id] = {};
+//         outputOf[t.id] = {};
+//     }
+
+//     for (const auto& arc : arcs) {
+//         bool srcIsPlace = false;
+//         int placeIndex = -1;
+
+//         for (int i = 0; i < places.size(); i++) {
+//             if (places[i].id == arc.source) {
+//                 srcIsPlace = true;
+//                 placeIndex = i;
+//                 break;
+//             }
+//         }
+
+//         if (srcIsPlace) {
+//             // source = place, target = transition
+//             inputOf[arc.target].push_back(placeIndex);
+//         } else {
+//             // source = transition, target = place
+//             for (int i = 0; i < places.size(); i++) {
+//                 if (places[i].id == arc.target) {
+//                     outputOf[arc.source].push_back(i);
+//                     break;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// // Kiểm tra missing arc dựa trên số lượng input/output
+// bool Graph::checkMissingArc(const string& tid) {
+//     // Nếu một transition không có input hoặc output arcs → missing
+//     if (inputOf[tid].empty() || outputOf[tid].empty()) {
+//         cout << "[ERROR] Transition " << tid << " has missing arc(s).\n";
+//         return false;
+//     }
+
+//     // Nếu số lượng input arcs != số lượng output arcs sau loại trùng lặp → missing
+//     vector<int> in = inputOf[tid];
+//     vector<int> out = outputOf[tid];
+
+//     if (in.size() != out.size()) {
+//         cout << "[ERROR] Transition " << tid << " input/output mismatch (possible missing arc).\n";
+//         return false;
+//     }
+
+//     return true;
+// }
+
+// bool Graph::isEnabled(const string& tid, const Marking& mk) {
+//     // Kiểm missing arc trước
+//     if (!checkMissingArc(tid)) return false;
+
+//     for (int p : inputOf[tid]) {
+//         if (mk.m[p] != 1) return false;
+//     }
+
+//     return true;
+// }
+
+// Marking Graph::fire(const string& tid, const Marking& mk) {
+//     Marking newM = mk;
+
+//     for (int p : inputOf[tid]) newM.m[p]--;
+//     for (int p : outputOf[tid]) newM.m[p]++;
+
+//     return newM;
+// }
+
+// void Graph::computeBFS() {
+//     queue<Marking> q;
+
+//     visited.insert(initial);
+//     allMarkings.push_back(initial);
+//     q.push(initial);
+
+//     while (!q.empty()) {
+//         Marking cur = q.front();
+//         q.pop();
+
+//         bool hasEnabled = false;
+
+//         for (const auto& t : transitions) {
+//             if (isEnabled(t.id, cur)) {
+//                 hasEnabled = true;
+//                 Marking next = fire(t.id, cur);
+
+//                 // cout << "Firing " << t.id << " from [";
+//                 // for(int v: cur.m) cout << v << " ";
+//                 // cout << "] -> [";
+//                 // for(int v: next.m) cout << v << " ";
+//                 // cout << "]\n";
+//                 // cái này là cái reachable markings sẽ thấy nó bị ngược
+//                 // nhưng mà không phải đâu tại reachable markings của T2 nó trùng initial markings
+//                 //nên không có in lại, có thể bỏ comment để check :))))
+
+//                 if (!visited.count(next)) {
+//                     visited.insert(next);
+//                     allMarkings.push_back(next);
+//                     q.push(next);
+//                 }
+//             }
+//         }
+
+//         if (!hasEnabled) {
+//             cout << "Marking [ ";
+//             for (int x : cur.m) cout << x << " ";
+//             cout << "] has no transition enabled.\n";
+//         }
+//     }
+// }
+
+// void Graph::printMarkings() {
+//     cout << "Reachable markings: " << allMarkings.size() << "\n";
+//     for (int i = 0; i < (int)allMarkings.size(); i++) {
+//         cout << "M" << i << ": [ ";
+//         for (int x : allMarkings[i].m)
+//             cout << x << " ";
+//         cout << "]\n";
+//     }
+// }
+
+
+#include "../inc/Task2_ReachabilityGraph.h"
+
+Graph::Graph(const Net& net) {
+    places = net.places;
+    transitions = net.transitions;
+    arcs = net.arcs;
+
+    initial.m.resize(places.size());
+    for (int i = 0; i < places.size(); i++)
+        initial.m[i] = places[i].tokens;
+
+    buildIOMaps();
+}
+
+void Graph::buildIOMaps() {
+    inputOf.clear();
+    outputOf.clear();
+
+    for (const auto& t : transitions) {
+        inputOf[t.id] = {};
+        outputOf[t.id] = {};
+    }
+
+    unordered_map<string,int> placeIndex;
+    unordered_map<string,int> transIndex;
+
+    for(int i=0; i<places.size(); ++i) placeIndex[places[i].id] = i;
+    for(int i=0; i<transitions.size(); ++i) transIndex[transitions[i].id] = i;
+
+    for (const auto& arc : arcs) {
+        bool srcIsPlace = placeIndex.count(arc.source);
+        bool trgIsPlace = placeIndex.count(arc.target);
+
+        bool srcIsTrans = transIndex.count(arc.source);
+        bool trgIsTrans = transIndex.count(arc.target);
+
+        if (srcIsPlace && trgIsTrans) {
+            // place → transition  (input arc)
+            inputOf[arc.target].push_back(placeIndex[arc.source]);
+        }
+        else if (srcIsTrans && trgIsPlace) {
+            // transition → place (output arc)
+            outputOf[arc.source].push_back(placeIndex[arc.target]);
+        }
+        else {
+            cout << "[ERROR] Invalid arc relation: "
+                 << arc.source << " → " << arc.target << "\n";
+        }
+    }
+}
+
+// Kiểm tra missing arc dựa trên số lượng input/output
+bool Graph::checkMissingArc(const string& tid) {
+    // Nếu một transition không có input hoặc output arcs → missing
+    if (inputOf[tid].empty() || outputOf[tid].empty()) {
+        cout << "[ERROR] Transition " << tid << " has missing arc(s).\n";
+        return false;
+    }
+
+    // Nếu số lượng input arcs != số lượng output arcs sau loại trùng lặp → missing
+    vector<int> in = inputOf[tid];
+    vector<int> out = outputOf[tid];
+
+    if (in.size() != out.size()) {
+        cout << "[ERROR] Transition " << tid << " input/output mismatch (possible missing arc).\n";
+        return false;
+    }
+
+    return true;
+}
+
+bool Graph::isEnabled(const string& tid, const Marking& mk) {
+    // Kiểm missing arc trước
+    // if (!checkMissingArc(tid)) return false;
+    // chỉ dùng checkMissingArc trong trường hợp hoàn toàn bắt buộc 2 đầu của transitions có số lượng bằng nhau
+    // loại bỏ vì phylosopher.pnml không tương thích
+
+    for (int p : inputOf[tid]) {
+        if (mk.m[p] < 1) return false;
+    }
+
+    return true;
+}
+
+Marking Graph::fire(const string& tid, const Marking& mk) {
+    Marking newM = mk;
+
+    for (int p : inputOf[tid]) newM.m[p]--;
+    for (int p : outputOf[tid]) newM.m[p]++;
+
+    return newM;
+}
+
+void Graph::computeBFS() {
+    queue<Marking> q;
+
+    // visited.insert(initial);
+    // allMarkings.push_back(initial);
+    // cái này sửa lại để có allMarkings theo đúng thứ tự khi trong kết quả có bao gồm initial marking
+    q.push(initial);
+
+    while (!q.empty()) {
+        Marking cur = q.front();
+        q.pop();
+
+        bool hasEnabled = false;
+
+        for (const auto& t : transitions) {
+            if (isEnabled(t.id, cur)) {
+                hasEnabled = true;
+                Marking next = fire(t.id, cur);
+
+                // cout << "Firing " << t.id << " from [";
+                // for(int v: cur.m) cout << v << " ";
+                // cout << "] -> [";
+                // for(int v: next.m) cout << v << " ";
+                // cout << "]\n";
+                // cái này là cái reachable markings sẽ thấy nó bị ngược
+                // nhưng mà không phải đâu tại reachable markings của T2 nó trùng initial markings
+                //nên không có in lại, có thể bỏ comment để check :))))
+
+                if (!visited.count(next)) {
+                    visited.insert(next);
+                    allMarkings.push_back(next);
+                    q.push(next);
+                }
+            }
+        }
+
+        if (!hasEnabled) {
+            cout << "Marking [ ";
+            for (int x : cur.m) cout << x << " ";
+            cout << "] has no transition enabled.\n";
+        }
+    }
+}
+
+void Graph::printMarkings() {
+    cout << "Reachable markings: " << allMarkings.size() << "\n";
+    for (int i = 0; i < (int)allMarkings.size(); i++) {
+        cout << "M" << i << ": [ ";
+        for (int x : allMarkings[i].m)
+            cout << x << " ";
+        cout << "]\n";
+    }
+}
+
+// Kiểm tra missing arc dựa trên số lượng input/output
+bool Graph::checkMissingArc() {
+    int totalInput = 0, totalOutput = 0;
+
+    for(const auto& t : transitions) {
+        totalInput += inputOf[t.id].size();
+        totalOutput += outputOf[t.id].size();
+    }
+
+    if(totalInput != totalOutput) {
+        cout << "[ERROR] Total input arcs != total output arcs\n";
+        return false;
+    }
+
+    return true;
+}
+
+
+#ifndef TASK2_REACHABILITYGRAPH_H
+#define TASK2_REACHABILITYGRAPH_H
+
+#include "Task1_PNMLParser.h"
+#include <unordered_set>
+#include <queue>
+#include <set>
+
+struct Marking {
+    vector<int> m;
+
+    bool operator==(const Marking& other) const {
+        return m == other.m;
+    }
+};
+
+struct MarkingHash {
+    size_t operator()(const Marking& mk) const {
+        size_t h = 0;
+        for (int x : mk.m)
+            h = h * 1315423911u + x; //Jenkens hash
+        return h;
+    }
+};
+
+class Graph {
+public:
+    Graph(const Net& net);
+
+    void computeBFS();
+    void printMarkings();
+
+private:
+    vector<Place> places;
+    vector<Transition> transitions;
+    vector<Arc> arcs;
+
+    // mapping transition → input places
+    unordered_map<string, vector<int>> inputOf;
+    // mapping transition → output places
+    unordered_map<string, vector<int>> outputOf;
+
+    Marking initial;
+    vector<Marking> allMarkings;
+    unordered_set<Marking, MarkingHash> visited;
+
+    void buildIOMaps();
+    bool checkMissingArc(const std::string& tid);
+    bool checkMissingArc();
+    bool isEnabled(const string& tid, const Marking& mk);
+    Marking fire(const string& tid, const Marking& mk);
+};
+
+
+#endif

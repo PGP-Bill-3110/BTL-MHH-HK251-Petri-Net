@@ -158,10 +158,10 @@ void BDDReacher::printBDDMarkings(){
         return;
     }
 
-    //so luong trang thai
+    // đếm số lượng trạng thái
     double numStates = reachableSet.CountMinterm(2 * net.places.size()) / pow(2, net.places.size());
-    //chi in ra neu so luong trang thai nho
-    // In ra các tổ hợp biến làm cho BDD = True
+    // chỉ in ra nếu số lượng nhỏ
+    // in ra các tổ hợp biến làm cho BDD = True
     // Kết quả in ra sẽ bao gồm cả biến x (chẵn) và x' (lẻ, thường là don't care '-')
     // Đọc ở vị trí chẵn 0, 2, 4... tương ứng với P0, P1, P2...
     if(numStates > 20){
@@ -170,7 +170,6 @@ void BDDReacher::printBDDMarkings(){
     else{
         cout<<"[BDD] Reachable Markings (Minterms):"<< endl;
         cout<<"Format: Variable indices (0, 2, 4... corresponds to Places p0, p1, p2...)" << endl;
-        // In ra các tổ hợp biến làm cho BDD = True
         reachableSet.PrintMinterm();
     }
 }

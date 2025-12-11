@@ -1,4 +1,4 @@
-script Python dưới đây để sinh ra 2 file test
+Thêm script Python để sinh ra 2 file test lớn
 
 1.  **`complex_parallel.pnml`**: Mạng gồm 12 tiến trình chạy song song.
       * **Độ phức tạp:** Số trạng thái = $2^{12} = 4096$ markings. (Gấp nhiều lần so với 2-4 markings ở ví dụ cũ).

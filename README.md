@@ -36,6 +36,15 @@ g++ -std=c++17 -Iinc -Icudd/local_install/include src/*.cpp -o build/pnml_test_v
 
 -----
 
+### Chạy với file mẫu cơ bản
+
+Chạy với các file ví dụ nhỏ có sẵn:
+
+```bash
+./build/pnml_test_v2 test/example_2.pnml
+```
+
+-----
 ## Hướng dẫn Chạy Thử nghiệm (Testing)
 
 ### 1\. Sinh dữ liệu Test phức tạp (Stress Testing)
@@ -89,16 +98,6 @@ Kịch bản này kiểm tra khả năng phát hiện lỗi hệ thống (Deadlo
   * **Task 4 (Deadlock):** Báo `[RESULT] DEADLOCK FOUND!`.
       * Hệ thống sẽ chỉ ra trạng thái deadlock (ví dụ: các vị trí `HasL` đều có token).
   * **Reachable markings:** Số lượng trạng thái ít hơn trường hợp parallel (82 markings) nhưng cấu trúc graph phức tạp hơn.
-
-### 4\. Chạy với file mẫu cơ bản
-
-Bạn cũng có thể chạy với các file ví dụ nhỏ có sẵn:
-
-```bash
-./build/pnml_test_v2 test/example_2.pnml
-```
-
------
 
 ## Giải quyết sự cố (Troubleshooting)
 

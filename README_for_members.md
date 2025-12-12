@@ -1,4 +1,14 @@
-Làm ở các branch, ổn r thì mới pull vào main
+
+Về cấu trúc:
+Folder source code nhóm em bao gồm:
+|_readme
+|_Task_1_PNMLParser
+|_Task_2_ReachabilityGraph
+|_Task_3_BDD_Symbolic
+|_Task_4_DeadlockILP
+|_Task_5_OptimizeILP
+
+Với mỗi task là 1 folder để có thể chạy và kiểm tra kết quả từng task
 
 ////////////////////////
 //Task 1 - 2
@@ -69,3 +79,12 @@ Yêu cầu: chương trình chương trình sử dụng C++17, thư viện tinyx
 4. Output của chương trình
 ...
 
+/////////////////////////////////////////////////////////////
+
+Task 3:
+
+Task 3 phải được chạy trên hệ điều hành Linux do sử dụng thư viện CUDD.
+
+Lệnh để biên dịch: g++ -std=c++11 -O2 -I./inc -I./lib -I/usr/local/include -o pnml_test src/main.cpp src/Task1_PNMLParser.cpp src/Task2_ReachabilityGraph.cpp src/Task3_BDD_SymbolicReach.cpp src/tinyxml2.cpp -L/usr/local/lib -lcudd
+
+Lệnh để chạy:  ./pnml_test
